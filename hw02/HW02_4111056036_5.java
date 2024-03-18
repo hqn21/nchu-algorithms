@@ -199,14 +199,17 @@ public class HW02_4111056036_5 extends FourSum {
         HashMap<Integer, List<Position>> map = new HashMap<>();
         int n = A.length;
         int ans = 0;
+        List<Position> positions;
+        Position pair;
+        int sum;
     
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                int sum = A[i] + A[j];
-                if (map.get(-sum) != null) {
-                    List<Position> positions = map.get(-sum);
+                sum = A[i] + A[j];
+                positions = map.get(-sum);
+                if (positions != null) {
                     for (int k = 0; k < positions.size(); k++) {
-                        Position pair = positions.get(k);
+                        pair = positions.get(k);
                         if (pair.i != i && pair.i != j && pair.j != i && pair.j != j) {
                             ans++;
                         }
@@ -215,7 +218,7 @@ public class HW02_4111056036_5 extends FourSum {
             }
     
             for (int k = 0; k < i; k++) {
-                int sum = A[i] + A[k];
+                sum = A[i] + A[k];
                 if (map.get(sum) == null) {
                     map.put(sum, new List<Position>());
                 }
