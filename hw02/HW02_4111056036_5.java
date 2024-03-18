@@ -194,35 +194,89 @@ public class HW02_4111056036_5 extends FourSum {
         }
     }
 
+    private static class SplitCheck extends Thread {
+        private HashMap<Integer, List<Position>> map;
+        private int[] A;
+        private int from;
+        private int to;
+        private int last;
+        private int result;
+
+        public SplitCheck(HashMap<Integer, List<Position>> map, int[] A, int from, int to, int last) {
+            this.map = map;
+            this.A = A;
+            this.from = from;
+            this.to = to;
+            this.last = last;
+        }
+
+        @Override
+        public void run() {
+            int ans = 0;
+            int sum;
+            List<Position> positions;
+            Position pair;
+            for (int i = this.from; i < this.to; i++) {
+                for (int j = i + 1; j < this.last; j++) {
+                    sum = this.A[i] + this.A[j];
+                    positions = this.map.get(-sum);
+                    if (positions != null) {
+                        for (int k = 0; k < positions.size(); k++) {
+                            pair = positions.get(k);
+                            if (pair.i != i && pair.i != j && pair.j != i && pair.j != j) {
+                                ans++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.result = ans;
+        }
+
+        public int getResult() {
+            return this.result;
+        }
+    }
+
     @Override
     public int F_sum(int[] A) {
         HashMap<Integer, List<Position>> map = new HashMap<>();
         int n = A.length;
         int ans = 0;
-    
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                int sum = A[i] + A[j];
-                if (map.get(-sum) != null) {
-                    List<Position> positions = map.get(-sum);
-                    for (int k = 0; k < positions.size(); k++) {
-                        Position pair = positions.get(k);
-                        if (pair.i != i && pair.i != j && pair.j != i && pair.j != j) {
-                            ans++;
-                        }
-                    }
-                }
-            }
-    
+        int sum;
+
+        for (int i = 0; i < n; i++) {
             for (int k = 0; k < i; k++) {
-                int sum = A[i] + A[k];
+                sum = A[i] + A[k];
                 if (map.get(sum) == null) {
                     map.put(sum, new List<Position>());
                 }
                 map.get(sum).add(new Position(k, i));
             }
         }
+
+        int threadNums = Runtime.getRuntime().availableProcessors();
+        int amountOnce = n / threadNums;
+
+        SplitCheck[] workQueue = new SplitCheck[threadNums];
+
+        for(int i = 0; i < threadNums - 1; i++) {
+            workQueue[i] = new SplitCheck(map, A, amountOnce * i, amountOnce * (i + 1), n);
+            workQueue[i].start();
+        }
+
+        workQueue[threadNums - 1] = new SplitCheck(map, A, amountOnce * (threadNums - 1), n - 1, n);
+        workQueue[threadNums - 1].start();
+
+        for(int i = 0; i < threadNums; i++) {
+            try {
+                workQueue[i].join();
+            } catch (InterruptedException e) { }
+            
+            ans += workQueue[i].getResult();
+        }
     
-        return ans;
+        return ans / 6;
     }
 }
