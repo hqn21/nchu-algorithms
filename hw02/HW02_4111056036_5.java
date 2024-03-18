@@ -14,7 +14,6 @@ public class HW02_4111056036_5 extends FourSum {
     }
 
     public class HashMap<K, V> {
-
         private static final int DEFAULT_CAPACITY = 16;
         private static final float DEFAULT_LOAD_FACTOR = 0.75f;
         private Node<K, V>[] table;
@@ -147,48 +146,79 @@ public class HW02_4111056036_5 extends FourSum {
     }
 
     public class List<E> {
-        private Node<E> head;
-        private Node<E> tail;
+        private static final int DEFAULT_CAPACITY = 10;
+        private static final Object[] DEFAULT_EMPTY_ELEMENTDATA = {};
+        private Object[] elementData;
         private int size;
-    
-        private class Node<E> {
-            E data;
-            Node<E> next;
-    
-            Node(E data, Node<E> next) {
-                this.data = data;
-                this.next = next;
-            }
-        }
-    
+
         public List() {
-            head = null;
-            tail = null;
-            size = 0;
+            elementData = DEFAULT_EMPTY_ELEMENTDATA;
         }
-    
-        public void add(E e) {
-            Node<E> newNode = new Node<>(e, null);
-            if (head == null) {
-                head = newNode;
+
+        public List(int originalSize) {
+            if (originalSize <= 0) {
+                elementData = DEFAULT_EMPTY_ELEMENTDATA;
             } else {
-                tail.next = newNode;
+                elementData = new Object[originalSize];
             }
-            tail = newNode;
+        }
+
+        public void add(E e) {
+            if (size == 0) {
+                elementData = new Object[DEFAULT_CAPACITY];
+            } else {
+                grew(size + 1);
+            }
+            elementData[size++] = e;
+        }
+
+        public void add(int index, E e) {
+            if (index > size || index < 0) {
+                throw new IndexOutOfBoundsException("index: " + index + ", size: " + size);
+            }
+
+            if (size == 0) {
+                elementData = new Object[DEFAULT_CAPACITY];
+            } else {
+                grew(size + 1);
+                System.arraycopy(elementData, index, elementData, index + 1, size - index);
+            }
+            elementData[index] = e;
             size++;
         }
-    
-        public E get(int index) {
-            if (index < 0 || index >= size) {
-                throw new IndexOutOfBoundsException();
+
+        private void grew(int minSize) {
+            int oldSize = elementData.length;
+            if (minSize - oldSize > 0) {
+                int newSize = oldSize + (oldSize >> 1);
+                Object[] newArray = new Object[newSize];
+                System.arraycopy(elementData, 0, newArray, 0, Math.min(elementData.length, newSize));
+                elementData = newArray;
             }
-            Node<E> node = head;
-            for (int i = 0; i < index; i++) {
-                node = node.next;
-            }
-            return node.data;
         }
-    
+
+        @SuppressWarnings("unchecked")
+        public E get(int index) {
+            if (index > size || index < 0) {
+                throw new IndexOutOfBoundsException("index: " + index + ", size: " + size);
+            }
+
+            return (E) elementData[index];
+        }
+
+        @SuppressWarnings("unchecked")
+        public E remove(int index) {
+            if (index > size || index < 0) {
+                throw new IndexOutOfBoundsException("index: " + index + ", size: " + size);
+            }
+            Object data = elementData[index];
+            System.arraycopy(elementData, index + 1, elementData, index, size - index - 1);
+
+            size--;
+
+            return (E) data;
+        }
+
         public int size() {
             return size;
         }
