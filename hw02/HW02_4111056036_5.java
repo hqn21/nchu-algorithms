@@ -147,7 +147,7 @@ public class HW02_4111056036_5 extends FourSum {
 
     public class List<E> {
         private static final int DEFAULT_CAPACITY = 10;
-        private static final Object[] DEFAULT_EMPTY_ELEMENTDATA = {};
+        private final Object[] DEFAULT_EMPTY_ELEMENTDATA = {};
         private Object[] elementData;
         private int size;
 
