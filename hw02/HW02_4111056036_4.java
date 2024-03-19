@@ -111,9 +111,11 @@ public class HW02_4111056036_4 extends FourSum {
         int right = sums.length - 1;
         int[] record = new int[sums.length];
         int leftCount, rightCount, low, high, initLeft, initRight;
+        int sum;
 
         while(left < right) {
-            if(sums[left].value + sums[right].value == 0) {
+            sum = sums[left].value + sums[right].value;
+            if(sum == 0) {
                 if(sums[left].value == 0) {
                     for(int i = left; i <= right; i++) {
                         for(int j = i + 1; j <= right; j++) {
@@ -154,7 +156,7 @@ public class HW02_4111056036_4 extends FourSum {
                 }
 
                 ans += leftCount * rightCount;
-            } else if(sums[left].value + sums[right].value > 0) {
+            } else if(sum > 0) {
                 right--;
             } else {
                 left++;

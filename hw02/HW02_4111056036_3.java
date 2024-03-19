@@ -1,6 +1,4 @@
 public class HW02_4111056036_3 extends FourSum {
-    Position[] sums;
-
     public HW02_4111056036_3() {
         
     }
@@ -49,7 +47,9 @@ public class HW02_4111056036_3 extends FourSum {
     @Override
     public int F_sum(int[] A) {
         int n = A.length;
-        sums = new Position[n * (n - 1) / 2];
+        Position[] sums = new Position[n * (n - 1) / 2];
+        int ans = 0;
+        
         int now = 0;
         for(int i = 0; i < n; i++) {
             for(int j = i + 1; j < n; j++) {
@@ -62,11 +62,13 @@ public class HW02_4111056036_3 extends FourSum {
 
         int left = 0;
         int right = sums.length - 1;
-        int ans = 0;
         int[] record = new int[sums.length];
         int leftCount, rightCount, low, high, initLeft, initRight;
+        int sum;
+
         while(left < right) {
-            if(sums[left].value + sums[right].value == 0) {
+            sum = sums[left].value + sums[right].value;
+            if(sum == 0) {
                 if(sums[left].value == 0) {
                     for(int i = left; i <= right; i++) {
                         for(int j = i + 1; j <= right; j++) {
@@ -107,7 +109,7 @@ public class HW02_4111056036_3 extends FourSum {
                 }
 
                 ans += leftCount * rightCount;
-            } else if(sums[left].value + sums[right].value > 0) {
+            } else if(sum > 0) {
                 right--;
             } else {
                 left++;
