@@ -3,6 +3,10 @@ public class HW02_4111056036_4 extends FourSum {
     Position[] sums;
     int n;
 
+    private int threadCount = 0;
+    private final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
+    private final int THRESHOLD = 10;
+
     public HW02_4111056036_4() {
         
     }
@@ -80,9 +84,6 @@ public class HW02_4111056036_4 extends FourSum {
     }
 
     class QuickSortThread extends Thread {
-        private static int threadCount = 0;
-        private static final int MAX_THREADS = Runtime.getRuntime().availableProcessors();
-        private static final int THRESHOLD = 10;
     
         private Position[] arr;
         private int low, high;
