@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class HW03 {
@@ -51,7 +50,9 @@ public class HW03 {
     public static void main(String[] args) {
         HW03_4111056036_1 build1 = new HW03_4111056036_1();
         HW03_4111056036_2 build2 = new HW03_4111056036_2();
+        HW03_4111056036_3 build3 = new HW03_4111056036_3();
         test(build1);
         test(build2);
+        test(build3);
     }
 }
