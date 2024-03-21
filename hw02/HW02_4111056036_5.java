@@ -106,7 +106,7 @@ public class HW02_4111056036_5 extends FourSum {
     public int F_sum(int[] A) {
         int count = 0;
 
-        SumTable table = new SumTable(25000);
+        SumTable table = new SumTable(500000); // 25000
 
         java.util.Arrays.sort(A);
 
