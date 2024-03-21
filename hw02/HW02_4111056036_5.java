@@ -1,261 +1,129 @@
+/*
+ * 思路: 將 4Sum 化簡為 2Sum 的問題
+ * 問題: 解決 2Sum 中子集合重複的問題
+ * 方式: 只取符合正排序位置的組合
+ */
+
+ class TableNode {
+	/*
+	 * position: 組合中後面點的位置
+	 * value:    紀錄所有小於該點目前的總數
+	 */
+    int position, value;
+    TableNode next;
+
+    public TableNode(int position) {
+        this.position = position;
+        this.value = 0;
+        this.next = null;
+    }
+}
+
+class SumTable {
+    int tableSize;
+
+    /*
+	 * 用來儲存相對應 key 值的矩陣
+	 * Head Node 儲存鏈結訊息 -> TableNode{ position: 真正的 key 值, value: 沒用 }
+	 * Body Node 儲存和為 sum 的組合訊息
+	 */
+    TableNode[] table;
+
+    public SumTable(int tableSize) {
+        this.table = new TableNode[this.tableSize = tableSize];
+    }
+
+	// 使用模數將傳入的任何數字轉為 0 ~ tableSize 間的數字
+    public int hash(int key) {
+        int hashKey = ((key % tableSize) + tableSize) % tableSize;
+
+		// 解決 key 的碰撞問題 -> 如果矩陣已經存在鏈結且 sum 不同，則往後移
+        while (table[hashKey] != null && table[hashKey].position != key) {
+            hashKey = (hashKey + 1) % tableSize;
+        }
+
+        return hashKey;
+    }
+
+    public void put(int sum, int endPosition) {
+		// 找到對應的鏈結 -> 具有相同的 sum
+        TableNode head = table[hash(sum)];
+
+		// 如果還沒有任何組合為該 sum
+        if (head == null) {
+            head = table[hash(sum)] = new TableNode(sum);
+        }
+
+		// 沒用
+        head.value++;
+
+		// 以組合後面元素的位置進行插入 -> 應該會由小到大
+        for (TableNode node = head; ; node = node.next) {
+			// 如果遇上相同的位置，則該節點的 count + 1
+            if (node != head && node.position == endPosition) {
+                node.value++;
+                return;
+            }
+            else if (node.next == null || node.next.position > endPosition) {
+                TableNode newNode = new TableNode(endPosition);
+                newNode.next = node.next;
+                node.next = newNode;
+                newNode.value++;
+                return;
+            }
+        }
+    }
+
+    public int count(int sum, int startPosition) {
+		// 找到對應的鏈結 -> 具有相同的 sum
+        TableNode head = table[hash(sum)];
+
+		// 如果還沒有任何組合為該 sum，則返回 0
+        if (head == null) {
+            return 0;
+        }
+
+        int acc = 0;
+
+		// 從頭開始查找，直到 startPosition 小於節點的位置
+        for (TableNode node = head.next; node != null; node = node.next) {
+            if (node.position >= startPosition) {
+                break;
+            }
+            acc += node.value;
+        }
+
+        return acc;
+    }
+
+    public boolean containsKey(int key) {
+        return table[hash(key)] != null;
+    }
+}
+
 public class HW02_4111056036_5 extends FourSum {
-    public HW02_4111056036_5() {
-        
-    }
-
-    private class Position {
-        int i;
-        int j;
-
-        private Position(int i, int j) {
-            this.i = i;
-            this.j = j;
-        }
-    }
-
-    public class HashMap<K, V> {
-        private static final int DEFAULT_CAPACITY = 16;
-        private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-        private Node<K, V>[] table;
-        private int size;
-
-        @SuppressWarnings("unchecked")
-        public HashMap() {
-            this.table = new Node[DEFAULT_CAPACITY];
-        }
-
-        @SuppressWarnings("unchecked")
-        private void grew() {
-            if ((size + 1) == (table.length * DEFAULT_LOAD_FACTOR)) {
-                Node<K, V>[] oldTable = table;
-                table = new Node[table.length << 1];
-                size = 0;
-                for (int i = 0; i < oldTable.length; i++) {
-                    Node<K, V> node = oldTable[i];
-                    while (node != null) {
-                        put(node.key, node.value);
-                        node = node.next;
-                    }
-                }
-            }
-        }
-
-        public void put(K key, V value) {
-            grew();
-
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node<K, V> node = table[index];
-            Node<K, V> newNode = new Node<>(hash, key, value, null);
-            if (node == null) {
-                table[index] = newNode;
-            } else {
-                boolean keyRepeat = false;
-                Node<K, V> last = null;
-                while (node != null) {
-                    if (node.key.equals(key)) {
-                        keyRepeat = true;
-                        node.value = value;
-                        break;
-                    } else {
-                        last = node;
-                        node = node.next;
-                    }
-                }
-                if (!keyRepeat) {
-                    last.next = newNode;
-                }
-            }
-
-            size++;
-        }
-
-        public V get(K key) {
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node<K, V> node = table[index];
-            while (node != null) {
-                if (node.key.equals(key)) {
-                    return node.value;
-                } else {
-                    node = node.next;
-                }
-            }
-            return null;
-        }
-
-        public V remove(K key) {
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node<K, V> node = table[index];
-            if (node != null && node.key.equals(key)) {
-                Node<K, V> next = node.next;
-                table[index] = next;
-                size--;
-                return node.value;
-            } else {
-                Node<K, V> pre = node;
-                node = node.next;
-                while (node != null) {
-                    if (node.key.equals(key)) {
-                        Node<K, V> next = node.next;
-                        pre.next = next;
-                        size--;
-                        return node.value;
-                    } else {
-                        pre = node;
-                        node = node.next;
-                    }
-                }
-            }
-            return null;
-        }
-
-        public int size() {
-            return size;
-        }
-
-        private int hash(Object key) {
-            if (key == null) {
-                return 0;
-            }
-
-            int h = key.hashCode();
-            h = h ^ (h >>> 16);
-
-            return h;
-        }
-
-        private int calcIndex(int hash) {
-            return  (table.length - 1) & hash;
-        }
-
-        private class Node<K, V> {
-            int hash;
-            K key;
-            V value;
-            Node<K, V> next;
-
-            public Node(int hash, K key, V value, Node<K, V> next) {
-                this.hash = hash;
-                this.key = key;
-                this.value = value;
-                this.next = next;
-            }
-        }
-    }
-
-    public class List<E> {
-        private static final int DEFAULT_CAPACITY = 10;
-        private final Object[] DEFAULT_EMPTY_ELEMENTDATA = {};
-        private Object[] elementData;
-        private int size;
-
-        public List() {
-            elementData = DEFAULT_EMPTY_ELEMENTDATA;
-        }
-
-        public List(int originalSize) {
-            if (originalSize <= 0) {
-                elementData = DEFAULT_EMPTY_ELEMENTDATA;
-            } else {
-                elementData = new Object[originalSize];
-            }
-        }
-
-        public void add(E e) {
-            if (size == 0) {
-                elementData = new Object[DEFAULT_CAPACITY];
-            } else {
-                grew(size + 1);
-            }
-            elementData[size++] = e;
-        }
-
-        public void add(int index, E e) {
-            if (index > size || index < 0) {
-                throw new IndexOutOfBoundsException("index: " + index + ", size: " + size);
-            }
-
-            if (size == 0) {
-                elementData = new Object[DEFAULT_CAPACITY];
-            } else {
-                grew(size + 1);
-                System.arraycopy(elementData, index, elementData, index + 1, size - index);
-            }
-            elementData[index] = e;
-            size++;
-        }
-
-        private void grew(int minSize) {
-            int oldSize = elementData.length;
-            if (minSize - oldSize > 0) {
-                int newSize = oldSize + (oldSize >> 1);
-                Object[] newArray = new Object[newSize];
-                System.arraycopy(elementData, 0, newArray, 0, Math.min(elementData.length, newSize));
-                elementData = newArray;
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        public E get(int index) {
-            if (index > size || index < 0) {
-                throw new IndexOutOfBoundsException("index: " + index + ", size: " + size);
-            }
-
-            return (E) elementData[index];
-        }
-
-        @SuppressWarnings("unchecked")
-        public E remove(int index) {
-            if (index > size || index < 0) {
-                throw new IndexOutOfBoundsException("index: " + index + ", size: " + size);
-            }
-            Object data = elementData[index];
-            System.arraycopy(elementData, index + 1, elementData, index, size - index - 1);
-
-            size--;
-
-            return (E) data;
-        }
-
-        public int size() {
-            return size;
-        }
-    }
-
     @Override
     public int F_sum(int[] A) {
-        HashMap<Integer, List<Position>> map = new HashMap<>();
-        int n = A.length;
-        int ans = 0;
-        List<Position> positions;
-        Position pair;
-        int sum;
-    
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                sum = A[i] + A[j];
-                positions = map.get(-sum);
-                if (positions != null) {
-                    for (int k = 0; k < positions.size(); k++) {
-                        pair = positions.get(k);
-                        if (pair.i != i && pair.i != j && pair.j != i && pair.j != j) {
-                            ans++;
-                        }
-                    }
+        int count = 0;
+
+        SumTable table = new SumTable(25000);
+
+        java.util.Arrays.sort(A);
+
+        for (int i = 0; i < A.length; ++i) {
+            for (int j = i + 1; j < A.length; ++j) {
+                int sum = A[i] + A[j];
+
+                if (sum >= 0) {
+                    count += table.count(-sum, i);
                 }
-            }
-    
-            for (int k = 0; k < i; k++) {
-                sum = A[i] + A[k];
-                if (map.get(sum) == null) {
-                    map.put(sum, new List<Position>());
+
+                if (sum <= 0) {
+                    table.put(sum, j);
                 }
-                map.get(sum).add(new Position(k, i));
             }
         }
-    
-        return ans;
+
+        return count;
     }
 }
