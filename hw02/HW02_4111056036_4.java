@@ -1,121 +1,177 @@
 public class HW02_4111056036_4 extends FourSum {
-    public HW02_4111056036_4() {
-        
-    }
-
-    public void quickSort(Position[] arr, int low, int high) {
-        if (low < high) {
-            int pi = partition(arr, low, high);
-
-            quickSort(arr, low, pi - 1);
-            quickSort(arr, pi + 1, high);
+    class TableNode {
+        int position, value;
+        TableNode next;
+    
+        public TableNode(int position) {
+            this.position = position;
+            this.value = 0;
+            this.next = null;
         }
     }
-
-    private int partition(Position[] arr, int low, int high) {
-        int pivot = arr[high].value;
-        int i = (low - 1);
-        for (int j = low; j < high; j++) {
-            if (arr[j].value < pivot) {
-                i++;
-
-                Position temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
+    
+    class SumTable {
+        int tableSize;
+        TableNode[] table;
+    
+        public SumTable(int tableSize) {
+            this.table = new TableNode[this.tableSize = tableSize];
+        }
+    
+        public int hash(int key) {
+            int hashKey = ((key % tableSize) + tableSize) % tableSize;
+            while (table[hashKey] != null && table[hashKey].position != key) {
+                hashKey = (hashKey + 1) % tableSize;
+            }
+            return hashKey;
+        }
+    
+        public void put(int sum, int endPosition) {
+            TableNode head = table[hash(sum)];
+            if (head == null) {
+                head = table[hash(sum)] = new TableNode(sum);
+            }
+    
+            head.value++;
+    
+            for (TableNode node = head; ; node = node.next) {
+                if (node != head && node.position == endPosition) {
+                    node.value++;
+                    return;
+                } else if (node.next == null || node.next.position > endPosition) {
+                    TableNode newNode = new TableNode(endPosition);
+                    newNode.next = node.next;
+                    node.next = newNode;
+                    newNode.value++;
+                    return;
+                }
             }
         }
-
-        Position temp = arr[i + 1];
-        arr[i + 1] = arr[high];
-        arr[high] = temp;
-
-        return i + 1;
+    
+        public int count(int sum, int startPosition) {
+            TableNode head = table[hash(sum)];
+    
+            if (head == null) {
+                return 0;
+            }
+    
+            int acc = 0;
+    
+            for (TableNode node = head.next; node != null; node = node.next) {
+                if (node.position >= startPosition) {
+                    break;
+                }
+                acc += node.value;
+            }
+    
+            return acc;
+        }
+    
+        public boolean containsKey(int key) {
+            return table[hash(key)] != null;
+        }
     }
-
-    private class Position {
-        int value;
-        int id_1;
-        int id_2;
-
-        Position(int value, int id_1, int id_2) {
-            this.value = value;
-            this.id_1 = id_1;
-            this.id_2 = id_2;
+    
+    class SplitPut extends Thread {
+        int from, to, last;
+        SumTable table;
+        int[] A;
+        
+        public SplitPut(int from, int to, int last, SumTable table, int[] A) {
+            this.from = from;
+            this.to = to;
+            this.last = last;
+            this.table = table;
+            this.A = A;
+        }
+    
+        @Override
+        public void run() {
+            int sum;
+            for(int i = this.from; i < this.to; ++i) {
+                for(int j = i + 1; j < this.last; ++j) {
+                    sum = A[i] + A[j];
+                    if(sum <= 0) {
+                        table.put(sum, j);
+                    }
+                }
+            }
+        }
+    }
+    
+    class SplitCount extends Thread {
+        int from, to, last, result;
+        SumTable table;
+        int[] A;
+    
+        public SplitCount(int from, int to, int last, SumTable table, int[] A) {
+            this.from = from;
+            this.to = to;
+            this.last = last;
+            this.table = table;
+            this.A = A;
+        }
+    
+        @Override
+        public void run() {
+            int sum;
+            int count = 0;
+            for(int i = this.from; i < this.to; ++i) {
+                for(int j = i + 1; j < this.last; ++j) {
+                    sum = A[i] + A[j];
+                    if (sum >= 0) {
+                        count += table.count(-sum, i);
+                    }
+                }
+            }
+            this.result = count;
+        }
+    
+        public int getResult() {
+            return this.result;
         }
     }
 
     @Override
     public int F_sum(int[] A) {
+        int count = 0;
         int n = A.length;
-        Position[] sums = new Position[n * (n - 1) / 2];
-        int ans = 0;
-        
-        int now = 0;
-        for(int i = 0; i < n; i++) {
-            for(int j = i + 1; j < n; j++) {
-                sums[now] = new Position(A[i] + A[j], i, j);
-                now++;
-            }
+
+        SumTable table = new SumTable(500000);
+
+        java.util.Arrays.sort(A);
+
+        int threadNums = Runtime.getRuntime().availableProcessors();
+        int amountOnce = n / threadNums;
+
+        SplitPut[] workQueue = new SplitPut[threadNums];
+        SplitCount[] workQueue2 = new SplitCount[threadNums];
+
+        for(int i = 0; i < threadNums - 1; i++) {
+            workQueue[i] = new SplitPut(amountOnce * i, amountOnce * (i + 1), n, table, A);
+            workQueue[i].start();
+        }
+        workQueue[threadNums - 1] = new SplitPut(amountOnce * (threadNums - 1), n - 1, n, table, A);
+        workQueue[threadNums - 1].start();
+        for(int i = 0; i < threadNums; i++) {
+            try {
+                workQueue[i].join();
+            } catch (InterruptedException e) { }
         }
 
-        this.quickSort(sums, 0, sums.length - 1);
-
-        int left = 0;
-        int right = sums.length - 1;
-        int[] record = new int[sums.length];
-        int leftCount, rightCount, low, high, initLeft, initRight;
-        int sum;
-
-        while(left < right) {
-            sum = sums[left].value + sums[right].value;
-            if(sum == 0) {
-                if(sums[left].value == 0) {
-                    for(int i = left; i <= right; i++) {
-                        for(int j = i + 1; j <= right; j++) {
-                            if(sums[i].id_1 != sums[j].id_1 && sums[i].id_1 != sums[j].id_2 && sums[i].id_2 != sums[j].id_1 && sums[i].id_2 != sums[j].id_2) {
-                                ans++;
-                            }
-                        }
-                    }
-                    break;
-                }
-
-                leftCount = 0;
-                rightCount = 0;
-                low = sums[left].value;
-                high = sums[right].value;
-
-                initLeft = left;
-                initRight = right;
-
-                while(left < right && sums[left].value == low) {
-                    record[sums[left].id_1]++;
-                    record[sums[left].id_2]++;
-                    leftCount++;
-                    left++;
-                }
-
-                while(left <= right && sums[right].value == high) {
-                    ans -= record[sums[right].id_1];
-                    ans -= record[sums[right].id_2];
-                    rightCount++;
-                    right--;
-                }
-
-                while(initLeft < initRight && sums[initLeft].value == low) {
-                    record[sums[initLeft].id_1]--;
-                    record[sums[initLeft].id_2]--;
-                    initLeft++;
-                }
-
-                ans += leftCount * rightCount;
-            } else if(sum > 0) {
-                right--;
-            } else {
-                left++;
-            }
+        for(int i = 0; i < threadNums - 1; i++) {
+            workQueue2[i] = new SplitCount(amountOnce * i, amountOnce * (i + 1), n, table, A);
+            workQueue2[i].start();
+        }
+        workQueue2[threadNums - 1] = new SplitCount(amountOnce * (threadNums - 1), n - 1, n, table, A);
+        workQueue2[threadNums - 1].start();
+        for(int i = 0; i < threadNums; i++) {
+            try {
+                workQueue2[i].join();
+            } catch (InterruptedException e) { }
+            count += workQueue2[i].getResult();
         }
 
-        return ans / 3;
+        return count;
     }
 }

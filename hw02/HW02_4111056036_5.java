@@ -1,143 +1,143 @@
-class TableNode {
-    int position, value;
-    TableNode next;
-
-    public TableNode(int position) {
-        this.position = position;
-        this.value = 0;
-        this.next = null;
-    }
-}
-
-class SumTable {
-    int tableSize;
-    TableNode[] table;
-
-    public SumTable(int tableSize) {
-        this.table = new TableNode[this.tableSize = tableSize];
-    }
-
-    public int hash(int key) {
-        int hashKey = ((key % tableSize) + tableSize) % tableSize;
-        while (table[hashKey] != null && table[hashKey].position != key) {
-            hashKey = (hashKey + 1) % tableSize;
-        }
-        return hashKey;
-    }
-
-    public void put(int sum, int endPosition) {
-        TableNode head = table[hash(sum)];
-        if (head == null) {
-            head = table[hash(sum)] = new TableNode(sum);
-        }
-
-        head.value++;
-
-        for (TableNode node = head; ; node = node.next) {
-            if (node != head && node.position == endPosition) {
-                node.value++;
-                return;
-            } else if (node.next == null || node.next.position > endPosition) {
-                TableNode newNode = new TableNode(endPosition);
-                newNode.next = node.next;
-                node.next = newNode;
-                newNode.value++;
-                return;
-            }
-        }
-    }
-
-    public int count(int sum, int startPosition) {
-        TableNode head = table[hash(sum)];
-
-        if (head == null) {
-            return 0;
-        }
-
-        int acc = 0;
-
-        for (TableNode node = head.next; node != null; node = node.next) {
-            if (node.position >= startPosition) {
-                break;
-            }
-            acc += node.value;
-        }
-
-        return acc;
-    }
-
-    public boolean containsKey(int key) {
-        return table[hash(key)] != null;
-    }
-}
-
-class SplitPut extends Thread {
-    int from, to, last;
-    SumTable table;
-    int[] A;
-    
-    public SplitPut(int from, int to, int last, SumTable table, int[] A) {
-        this.from = from;
-        this.to = to;
-        this.last = last;
-        this.table = table;
-        this.A = A;
-    }
-
-    @Override
-    public void run() {
-        int sum;
-        for(int i = this.from; i < this.to; ++i) {
-            for(int j = i + 1; j < this.last; ++j) {
-                sum = A[i] + A[j];
-                if(sum <= 0) {
-                    table.put(sum, j);
-                }
-            }
-        }
-    }
-}
-
-class SplitCount extends Thread {
-    int from, to, last, result;
-    SumTable table;
-    int[] A;
-
-    public SplitCount(int from, int to, int last, SumTable table, int[] A) {
-        this.from = from;
-        this.to = to;
-        this.last = last;
-        this.table = table;
-        this.A = A;
-    }
-
-    @Override
-    public void run() {
-        int sum;
-        int count = 0;
-        for(int i = this.from; i < this.to; ++i) {
-            for(int j = i + 1; j < this.last; ++j) {
-                sum = A[i] + A[j];
-                if (sum >= 0) {
-                    count += table.count(-sum, i);
-                }
-            }
-        }
-        this.result = count;
-    }
-
-    public int getResult() {
-        return this.result;
-    }
-}
-
 public class HW02_4111056036_5 extends FourSum {
+    class TableNode {
+        int position, value;
+        TableNode next;
+    
+        public TableNode(int position) {
+            this.position = position;
+            this.value = 0;
+            this.next = null;
+        }
+    }
+    
+    class SumTable {
+        int tableSize;
+        TableNode[] table;
+    
+        public SumTable(int tableSize) {
+            this.table = new TableNode[this.tableSize = tableSize];
+        }
+    
+        public int hash(int key) {
+            int hashKey = ((key % tableSize) + tableSize) % tableSize;
+            while (table[hashKey] != null && table[hashKey].position != key) {
+                hashKey = (hashKey + 1) % tableSize;
+            }
+            return hashKey;
+        }
+    
+        public void put(int sum, int endPosition) {
+            TableNode head = table[hash(sum)];
+            if (head == null) {
+                head = table[hash(sum)] = new TableNode(sum);
+            }
+    
+            head.value++;
+    
+            for (TableNode node = head; ; node = node.next) {
+                if (node != head && node.position == endPosition) {
+                    node.value++;
+                    return;
+                } else if (node.next == null || node.next.position > endPosition) {
+                    TableNode newNode = new TableNode(endPosition);
+                    newNode.next = node.next;
+                    node.next = newNode;
+                    newNode.value++;
+                    return;
+                }
+            }
+        }
+    
+        public int count(int sum, int startPosition) {
+            TableNode head = table[hash(sum)];
+    
+            if (head == null) {
+                return 0;
+            }
+    
+            int acc = 0;
+    
+            for (TableNode node = head.next; node != null; node = node.next) {
+                if (node.position >= startPosition) {
+                    break;
+                }
+                acc += node.value;
+            }
+    
+            return acc;
+        }
+    
+        public boolean containsKey(int key) {
+            return table[hash(key)] != null;
+        }
+    }
+    
+    class SplitPut extends Thread {
+        int from, to, last;
+        SumTable table;
+        int[] A;
+        
+        public SplitPut(int from, int to, int last, SumTable table, int[] A) {
+            this.from = from;
+            this.to = to;
+            this.last = last;
+            this.table = table;
+            this.A = A;
+        }
+    
+        @Override
+        public void run() {
+            int sum;
+            for(int i = this.from; i < this.to; ++i) {
+                for(int j = i + 1; j < this.last; ++j) {
+                    sum = A[i] + A[j];
+                    if(sum <= 0) {
+                        table.put(sum, j);
+                    }
+                }
+            }
+        }
+    }
+    
+    class SplitCount extends Thread {
+        int from, to, last, result;
+        SumTable table;
+        int[] A;
+    
+        public SplitCount(int from, int to, int last, SumTable table, int[] A) {
+            this.from = from;
+            this.to = to;
+            this.last = last;
+            this.table = table;
+            this.A = A;
+        }
+    
+        @Override
+        public void run() {
+            int sum;
+            int count = 0;
+            for(int i = this.from; i < this.to; ++i) {
+                for(int j = i + 1; j < this.last; ++j) {
+                    sum = A[i] + A[j];
+                    if (sum >= 0) {
+                        count += table.count(-sum, i);
+                    }
+                }
+            }
+            this.result = count;
+        }
+    
+        public int getResult() {
+            return this.result;
+        }
+    }
+
     @Override
     public int F_sum(int[] A) {
         int count = 0;
         int n = A.length;
 
-        SumTable table = new SumTable(500000);
+        SumTable table = new SumTable(1000000);
 
         java.util.Arrays.sort(A);
 
