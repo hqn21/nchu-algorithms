@@ -26,16 +26,16 @@ public class HW02 {
         time = stopWatch.elapsedTime();
         System.out.println("Result: " + result + " " + (result == 3 ? "[CORRECT]" : "[WRONG]"));
         System.out.println("Time: " + time);
-        // stopWatch = new StopWatch();
-        // result = f.F_sum(d);
-        // time = stopWatch.elapsedTime();
-        // System.out.println("Result: " + result + " " + (result == 13614 ? "[CORRECT]" : "[WRONG]"));
-        // System.out.println("Time: " + time);
-        // stopWatch = new StopWatch();
-        // result = f.F_sum(e);
-        // time = stopWatch.elapsedTime();
-        // System.out.println("Result: " + result + " " + (result == 13867 ? "[CORRECT]" : "[WRONG]"));
-        // System.out.println("Time: " + time);
+        stopWatch = new StopWatch();
+        result = f.F_sum(d);
+        time = stopWatch.elapsedTime();
+        System.out.println("Result: " + result + " " + (result == 13614 ? "[CORRECT]" : "[WRONG]"));
+        System.out.println("Time: " + time);
+        stopWatch = new StopWatch();
+        result = f.F_sum(e);
+        time = stopWatch.elapsedTime();
+        System.out.println("Result: " + result + " " + (result == 13867 ? "[CORRECT]" : "[WRONG]"));
+        System.out.println("Time: " + time);
         System.out.println("====================");
     }
 
