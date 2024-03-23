@@ -31,7 +31,7 @@ class HashMap<K, V> {
         int hash = hash(key);
         int index = calcIndex(hash);
         Node<K, V> node = table[index];
-        Node<K, V> newNode = new Node<>(hash, key, value, null);
+        Node<K, V> newNode = new Node<>(key, value, null);
         if (node == null) {
             table[index] = newNode;
         } else {
@@ -69,33 +69,6 @@ class HashMap<K, V> {
         return null;
     }
 
-    public V remove(K key) {
-        int hash = hash(key);
-        int index = calcIndex(hash);
-        Node<K, V> node = table[index];
-        if (node != null && node.key.equals(key)) {
-            Node<K, V> next = node.next;
-            table[index] = next;
-            size--;
-            return node.value;
-        } else {
-            Node<K, V> pre = node;
-            node = node.next;
-            while (node != null) {
-                if (node.key.equals(key)) {
-                    Node<K, V> next = node.next;
-                    pre.next = next;
-                    size--;
-                    return node.value;
-                } else {
-                    pre = node;
-                    node = node.next;
-                }
-            }
-        }
-        return null;
-    }
-
     public int size() {
         return size;
     }
@@ -115,14 +88,12 @@ class HashMap<K, V> {
         return  (table.length - 1) & hash;
     }
 
-    private class Node<K, V> {
-        int hash;
-        K key;
-        V value;
-        Node<K, V> next;
+    private class Node<E, A> {
+        E key;
+        A value;
+        Node<E, A> next;
 
-        public Node(int hash, K key, V value, Node<K, V> next) {
-            this.hash = hash;
+        public Node(E key, A value, Node<E, A> next) {
             this.key = key;
             this.value = value;
             this.next = next;
@@ -131,19 +102,13 @@ class HashMap<K, V> {
 }
 
 class DataNode {
-    int id;
+    int id, value;
     DataNode next;
-    DataNode last;
 
-    public DataNode(int id, DataNode next, DataNode last) {
+    public DataNode(int id, int value, DataNode next) {
         this.id = id;
+        this.value = value;
         this.next = next;
-        this.last = last;
-    }
-
-    public void put(int id) {
-        DataNode newDataNode = new DataNode(id, null, null);
-        last.next = newDataNode;
     }
 }
 
@@ -165,11 +130,10 @@ public class HW02_4111056036_4 extends FourSum {
                     dataNode = table.get(-sum);
                     while(dataNode != null) {
                         if(dataNode.id >= i) {
-                            dataNode = dataNode.next;
-                            continue;
-                        } else {
-                            ans++;
+                            break;
                         }
+
+                        ans += dataNode.value;
                         dataNode = dataNode.next;
                     }
                 }
@@ -177,13 +141,27 @@ public class HW02_4111056036_4 extends FourSum {
                 if(sum <= 0) {
                     dataNode = table.get(sum);
                     if(dataNode == null) {
-                        DataNode newDataNode = new DataNode(j, null, null);
-                        newDataNode.last = newDataNode;
-                        table.put(sum, newDataNode);
+                        dataNode = new DataNode(j, 1, null);
+                        table.put(sum, dataNode);
                     } else {
-                        DataNode newNode = new DataNode(j, null, null);
-                        dataNode.last.next = newNode;
-                        dataNode.last = newNode;
+                        if(dataNode.id > j) {
+                            dataNode = new DataNode(j, 1, dataNode);
+                            table.put(sum, dataNode);
+                            continue;
+                        }
+
+                        while(dataNode != null) {
+                            if(dataNode.id == j) {
+                                dataNode.value++;
+                                break;
+                            } else if(dataNode.next == null || dataNode.next.id > j) {
+                                DataNode newDataNode = new DataNode(j, 1, dataNode.next);
+                                dataNode.next = newDataNode;
+                                break;
+                            }
+                            dataNode = dataNode.next;
+                        }
+
                     }
                 }
             }
