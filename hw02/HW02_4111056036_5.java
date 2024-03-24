@@ -5,7 +5,7 @@ public class HW02_4111056036_5 extends FourSum {
     
         public TableNode(int position) {
             this.position = position;
-            this.value = 0;
+            this.value = 1;
             this.next = null;
         }
     }
@@ -32,8 +32,6 @@ public class HW02_4111056036_5 extends FourSum {
                 head = table[hash(sum)] = new TableNode(sum);
             }
     
-            head.value++;
-    
             for (TableNode node = head; ; node = node.next) {
                 if (node != head && node.position == endPosition) {
                     node.value++;
@@ -42,7 +40,6 @@ public class HW02_4111056036_5 extends FourSum {
                     TableNode newNode = new TableNode(endPosition);
                     newNode.next = node.next;
                     node.next = newNode;
-                    newNode.value++;
                     return;
                 }
             }
@@ -110,7 +107,7 @@ public class HW02_4111056036_5 extends FourSum {
         int count = 0;
         int n = A.length;
 
-        SumTable table = new SumTable(1000000);
+        SumTable table = new SumTable(500000);
 
         java.util.Arrays.sort(A);
 

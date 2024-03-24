@@ -1,79 +1,92 @@
-public class HW02_4111056036_1 extends FourSum {
-    public HW02_4111056036_1() {
-        
+class Node {
+    int id, value;
+    Node next;
+
+    Node(int id, Node next) {
+        this.id = id;
+        this.value = 1;
+        this.next = next;
+    }
+}
+
+class HashTable {
+    int size;
+    Node[] nodes;
+    int[] sums;
+
+    HashTable(int size) {
+        this.size = size;
+        this.nodes = new Node[size];
+        this.sums = new int[size];
     }
 
-    public void quickSort(int[] arr, int low, int high) {
-        int pi;
-        if (low < high) {
-            pi = partition(arr, low, high);
-
-            quickSort(arr, low, pi - 1);
-            quickSort(arr, pi + 1, high);
+    int hash(int key) {
+        int hashKey = ((key % size) + size) % size;
+        while (nodes[hashKey] != null && sums[hashKey] != key) {
+            hashKey = (hashKey + 1) % size;
         }
+        return hashKey;
     }
 
-    private int partition(int[] arr, int low, int high) {
-        int pivot = arr[high];
-        int i = (low - 1);
-        int temp;
-        for (int j = low; j < high; j++) {
-            if (arr[j] < pivot) {
-                i++;
+    void put(int sum, int id) {
+        int key = hash(sum);
+        Node head = nodes[key];
 
-                temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
+        if(head == null) {
+            nodes[key] = new Node(id, null);
+            sums[key] = sum;
+            return;
+        }
+
+        if(head.id > id) {
+            nodes[key] = new Node(id, head);
+            return;
+        }
+
+        while(head != null) {
+            if(head.id == id) {
+                head.value++;
+                return;
+            } else if(head.next == null || head.next.id > id) {
+                Node newNode = new Node(id, head.next);
+                head.next = newNode;
+                return;
             }
+            head = head.next;
         }
-
-        temp = arr[i + 1];
-        arr[i + 1] = arr[high];
-        arr[high] = temp;
-
-        return i + 1;
     }
 
+    int count(int sum, int startId) {
+        int count = 0;
+        Node head = nodes[hash(sum)];
+
+        while(head != null) {
+            if(head.id >= startId) {
+                break;
+            }
+            count += head.value;
+            head = head.next;
+        }
+
+        return count;
+    }
+}
+
+public class HW02_4111056036_1 extends FourSum {
     @Override
     public int F_sum(int[] A) {
-        int n = A.length;
-        int ans = 0;
-        int start, end, sum, low, high;
-        this.quickSort(A, 0, n - 1);
+        int ans = 0, n = A.length, sum;
+        HashTable table = new HashTable(25000);
+        java.util.Arrays.sort(A);
 
-        for(int i = 0; i < n; i++) {
-            if(i > 0 && A[i] == A[i - 1]) {
-                continue;
-            }
-
-            for(int j = i + 1; j < n; j++) {
-                if(j > (i + 1) && A[j] == A[j - 1]) {
-                    continue;
+        for(int i = 0; i < n - 1; ++i) {
+            for(int j = i + 1; j < n; ++j) {
+                sum = A[i] + A[j];
+                if(sum >= 0) {
+                    ans += table.count(-sum, i);
                 }
-
-                start = j + 1;
-                end = n - 1;
-                while(start < end) {
-                    sum = A[i] + A[j] + A[start] + A[end];
-                    if(sum == 0) {
-                        ans++;
-                        low = A[start];
-                        high = A[end];
-                        start++;
-                        end--;
-                        while(start < end && A[start] == low) {
-                            start++;
-                            ans++;
-                        }
-                        while(start < end && A[end] == high) {
-                            end--;
-                            ans++;
-                        }
-                    } else if(sum > 0) {
-                        end--;
-                    } else {
-                        start++;
-                    }
+                if(sum <= 0) {
+                    table.put(sum, j);
                 }
             }
         }
