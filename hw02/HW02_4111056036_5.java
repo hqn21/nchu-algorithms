@@ -22,7 +22,7 @@ public class HW02_4111056036_5 extends FourSum {
                     break;
                 }
                 
-                ++sums[(A[i] + A[j]) * (-1)];
+                ++sums[~(A[i] + A[j]) + 1];
             }
         }
 
