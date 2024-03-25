@@ -2,7 +2,7 @@ class Node {
     int id, value;
     Node next;
 
-    Node(int id, Node next) {
+    public Node(int id, Node next) {
         this.id = id;
         this.value = 1;
         this.next = next;
@@ -14,13 +14,13 @@ class HashTable {
     Node[] nodes;
     int[] sums;
 
-    HashTable(int size) {
+    public HashTable(int size) {
         this.size = size;
         this.nodes = new Node[size];
         this.sums = new int[size];
     }
 
-    int hash(int key) {
+    public int hash(int key) {
         int hashKey = ((key % size) + size) % size;
         while (nodes[hashKey] != null && sums[hashKey] != key) {
             hashKey = (hashKey + 1) % size;
@@ -28,7 +28,7 @@ class HashTable {
         return hashKey;
     }
 
-    void put(int sum, int id) {
+    public void put(int sum, int id) {
         int key = hash(sum);
         Node head = nodes[key];
 
@@ -56,7 +56,7 @@ class HashTable {
         }
     }
 
-    int count(int sum, int startId) {
+    public int count(int sum, int startId) {
         int count = 0;
         Node head = nodes[hash(sum)];
 
@@ -74,7 +74,7 @@ class HashTable {
 
 public class HW02_4111056036_1 extends FourSum {
     public HW02_4111056036_1() {
-        
+
     }
 
     @Override
