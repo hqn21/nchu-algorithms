@@ -3,7 +3,8 @@ public class HW03_4111056036_5 extends DogeCoin {
     public int doge(int[] price) {
         int profit = 0;
         int min = price[0];
-        for(int i = 1; i < price.length; ++i) {
+        int n = price.length;
+        for(int i = 1; i < n; ++i) {
             if(price[i] < min) {
                 min = price[i];
             } else if(profit < price[i] - min) {
