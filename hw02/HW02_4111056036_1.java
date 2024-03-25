@@ -73,6 +73,10 @@ class HashTable {
 }
 
 public class HW02_4111056036_1 extends FourSum {
+    public HW02_4111056036_1() {
+        
+    }
+
     @Override
     public int F_sum(int[] A) {
         int ans = 0, n = A.length, sum;
