@@ -2,29 +2,27 @@ class Node {
     int id, value;
     Node next;
 
-    public Node(int id, Node next) {
+    public Node(int id) {
         this.id = id;
-        this.value = 1;
-        this.next = next;
+        this.value = 0;
+        this.next = null;
     }
 }
 
 class HashTable {
     int size;
     Node[] nodes;
-    int[] sums;
 
     public HashTable(int size) {
-        this.size = size;
-        this.nodes = new Node[size];
-        this.sums = new int[size];
+        this.nodes = new Node[this.size = size];
     }
 
     public int hash(int key) {
         int hashKey = ((key % size) + size) % size;
-        while (nodes[hashKey] != null && sums[hashKey] != key) {
+        while (nodes[hashKey] != null && nodes[hashKey].id != key) {
             hashKey = (hashKey + 1) % size;
         }
+
         return hashKey;
     }
 
@@ -33,39 +31,38 @@ class HashTable {
         Node head = nodes[key];
 
         if(head == null) {
-            nodes[key] = new Node(id, null);
-            sums[key] = sum;
-            return;
+            head = nodes[key] = new Node(sum);
         }
 
-        if(head.id > id) {
-            nodes[key] = new Node(id, head);
-            return;
-        }
-
-        while(head != null) {
-            if(head.id == id) {
-                head.value++;
-                return;
-            } else if(head.next == null || head.next.id > id) {
-                Node newNode = new Node(id, head.next);
-                head.next = newNode;
+        for (Node node = head; ; node = node.next) {
+            if (node != head && node.id == id) {
+                node.value++;
                 return;
             }
-            head = head.next;
+            else if (node.next == null || node.next.id > id) {
+                Node newNode = new Node(id);
+                newNode.next = node.next;
+                node.next = newNode;
+                newNode.value++;
+                return;
+            }
         }
     }
 
     public int count(int sum, int startId) {
-        int count = 0;
         Node head = nodes[hash(sum)];
 
-        while(head != null) {
-            if(head.id >= startId) {
+        if(head == null) {
+            return 0;
+        }
+
+        int count = 0;
+
+        for (Node node = head.next; node != null; node = node.next) {
+            if (node.id >= startId) {
                 break;
             }
-            count += head.value;
-            head = head.next;
+            count += node.value;
         }
 
         return count;
