@@ -36,14 +36,14 @@ class HashTable {
 
         for (Node node = head; ; node = node.next) {
             if (node != head && node.id == id) {
-                node.value++;
+                ++node.value;
                 return;
             }
             else if (node.next == null || node.next.id > id) {
                 Node newNode = new Node(id);
                 newNode.next = node.next;
                 node.next = newNode;
-                newNode.value++;
+                ++newNode.value;
                 return;
             }
         }
