@@ -132,6 +132,7 @@ public class HW04_4111056036_1 extends LanguageModel {
                     max = data;
                 }
                 temp = "";
+                insert = false;
                 continue;
             }
             temp += A[1].charAt(i);
