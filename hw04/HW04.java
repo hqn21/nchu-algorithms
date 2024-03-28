@@ -52,6 +52,8 @@ public class HW04 {
 
     public static void main(String[] args) {
         HW04_4111056036_1 build1 = new HW04_4111056036_1();
+        HW04_4111056036_2 build2 = new HW04_4111056036_2();
         test(build1);
+        test(build2);
     }
 }
