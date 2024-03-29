@@ -54,8 +54,10 @@ public class HW04 {
         HW04_4111056036_1 build1 = new HW04_4111056036_1();
         HW04_4111056036_2 build2 = new HW04_4111056036_2();
         HW04_4111056036_3 build3 = new HW04_4111056036_3();
+        HW04_4111056036_4 build4 = new HW04_4111056036_4();
         test(build1);
         test(build2);
         test(build3);
+        test(build4);
     }
 }
