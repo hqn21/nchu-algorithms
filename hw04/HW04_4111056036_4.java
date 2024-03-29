@@ -42,8 +42,7 @@ public class HW04_4111056036_4 extends LanguageModel {
 
         if(insert) {
             temp = now % 25000;
-            ++record[temp];
-            if(record[temp] > max) {
+            if(++record[temp] > max) {
                 max = record[temp];
                 ans = A[1].substring(prev, n);
             }
