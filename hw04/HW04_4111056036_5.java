@@ -1,8 +1,8 @@
 public class HW04_4111056036_5 extends LanguageModel {
 	@Override
     public String nextPredictToken(String[] A) {
-        int[] record = new int[15000];
-        int target = A[0].chars().sum() % 15000;
+        int[] record = new int[1000];
+        int target = A[0].chars().sum() % 1000;
         int now = 0;
         int n = A[1].length();
         int max = 0;
@@ -13,7 +13,7 @@ public class HW04_4111056036_5 extends LanguageModel {
 
         for(int i = 0; i < n; i++) {
             if(A[1].charAt(i) == ' ') {
-                if(now % 15000 == target) {
+                if(now % 1000 == target) {
                     insert = true;
                     now = 0;
                     prev = i + 1;
@@ -21,7 +21,7 @@ public class HW04_4111056036_5 extends LanguageModel {
                 }
 
                 if(insert) {
-                    temp = now % 15000;
+                    temp = now % 1000;
                     if(++record[temp] > max) {
                         max = record[temp];
                         ans = A[1].substring(prev, i);
@@ -41,7 +41,7 @@ public class HW04_4111056036_5 extends LanguageModel {
         }
 
         if(insert) {
-            temp = now % 15000;
+            temp = now % 1000;
             if(++record[temp] > max) {
                 max = record[temp];
                 ans = A[1].substring(prev, n);
