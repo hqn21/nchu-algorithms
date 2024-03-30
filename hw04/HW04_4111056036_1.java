@@ -8,7 +8,7 @@ public class HW04_4111056036_1 extends LanguageModel {
         int max = 0;
         int temp;
         int prev = 0;
-        StringBuilder ans = new StringBuilder();
+        int ansStart = 0, ansEnd = 0;
         boolean insert = false;
 
         for(int i = 0; i < n; i++) {
@@ -24,8 +24,8 @@ public class HW04_4111056036_1 extends LanguageModel {
                     temp = now % 1000;
                     if(++record[temp] > max) {
                         max = record[temp];
-                        ans.setLength(0);
-                        ans.append(A[1], prev, i);
+                        ansStart = prev;
+                        ansEnd = i;
                     }
                     now = 0;
                     insert = false;
@@ -45,11 +45,11 @@ public class HW04_4111056036_1 extends LanguageModel {
             temp = now % 1000;
             if(++record[temp] > max) {
                 max = record[temp];
-                ans.setLength(0);
-                ans.append(A[1], prev, n);
+                ansStart = prev;
+                ansEnd = n;
             }
         }
 
-		return ans.toString();
+		return A[1].substring(ansStart, ansEnd);
     }
 }
