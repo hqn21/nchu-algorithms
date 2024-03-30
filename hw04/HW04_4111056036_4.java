@@ -2,38 +2,43 @@ public class HW04_4111056036_4 extends LanguageModel {
 	@Override
     public String nextPredictToken(String[] A) {
         int[] record = new int[500];
-        int target = A[0].chars().sum() % 500;
+        int targetLength = A[0].length();
+        
+        int nowChecking = 0;
         int now = 0;
         int n = A[1].length();
         int max = 0;
-        int temp;
         int prev = 0;
-        String ans = "";
+        int ansStart = 0, ansEnd = 0;
         boolean insert = false;
 
         for(int i = 0; i < n; ++i) {
             if(A[1].charAt(i) == ' ') {
-                if(now % 500 == target) {
-                    insert = true;
-                    now = 0;
-                    prev = i + 1;
-                    continue;
-                }
-
                 if(insert) {
-                    temp = now % 500;
-                    if(++record[temp] > max) {
-                        max = record[temp];
-                        ans = A[1].substring(prev, i);
+                    now = now % 500;
+                    if(++record[now] > max) {
+                        max = record[now];
+                        ansStart = prev;
+                        ansEnd = i;
                     }
                     now = 0;
                     insert = false;
-                    prev = i + 1;
                     continue;
+                } else {
+                    insert = true;
+                    prev = i + 1;
                 }
+            }
 
-                now = 0;
-                prev = i + 1;
+            if(!insert) {
+                if(nowChecking >= targetLength || (A[1].charAt(i) != A[0].charAt(nowChecking))) {
+                    while(i < n && A[1].charAt(i) != ' ') {
+                        ++i;
+                    }
+                    nowChecking = 0;
+                } else {
+                    ++nowChecking;
+                }
                 continue;
             }
 
@@ -41,13 +46,14 @@ public class HW04_4111056036_4 extends LanguageModel {
         }
 
         if(insert) {
-            temp = now % 500;
-            if(++record[temp] > max) {
-                max = record[temp];
-                ans = A[1].substring(prev, n);
+            now = now % 500;
+            if(++record[now] > max) {
+                max = record[now];
+                ansStart = prev;
+                ansEnd = n;
             }
         }
 
-		return ans;
+		return A[1].substring(ansStart, ansEnd);
     }
 }
