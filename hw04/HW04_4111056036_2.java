@@ -3,10 +3,6 @@ public class HW04_4111056036_2 extends LanguageModel {
     public String nextPredictToken(String[] A) {
         int[] record = new int[1000];
         int targetLength = A[0].length();
-        char[] target = new char[targetLength];
-        for(int i = 0; i < targetLength; ++i) {
-            target[i] = A[0].charAt(i);
-        }
         
         int nowChecking = 0;
         int now = 0;
@@ -35,7 +31,7 @@ public class HW04_4111056036_2 extends LanguageModel {
             }
 
             if(!insert) {
-                if(nowChecking >= targetLength || (A[1].charAt(i) != target[nowChecking])) {
+                if(nowChecking >= targetLength || (A[1].charAt(i) != A[0].charAt(nowChecking))) {
                     while(i < n && A[1].charAt(i) != ' ') {
                         ++i;
                     }
