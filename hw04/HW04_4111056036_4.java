@@ -11,7 +11,7 @@ public class HW04_4111056036_4 extends LanguageModel {
         String ans = "";
         boolean insert = false;
 
-        for(int i = 0; i < n; i++) {
+        for(int i = 0; i < n; ++i) {
             if(A[1].charAt(i) == ' ') {
                 if(now % 500 == target) {
                     insert = true;

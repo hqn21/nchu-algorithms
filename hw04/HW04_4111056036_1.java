@@ -11,7 +11,7 @@ public class HW04_4111056036_1 extends LanguageModel {
         int ansStart = 0, ansEnd = 0;
         boolean insert = false;
 
-        for(int i = 0; i < n; i++) {
+        for(int i = 0; i < n; ++i) {
             if(A[1].charAt(i) == ' ') {
                 if(now % 1000 == target) {
                     insert = true;
