@@ -1,5 +1,5 @@
 public class HW04_4111056036_2 extends LanguageModel {
-	@Override
+    @Override
     public String nextPredictToken(String[] A) {
         int[] record = new int[1000];
         int targetLength = A[0].length();
@@ -23,14 +23,13 @@ public class HW04_4111056036_2 extends LanguageModel {
                     }
                     now = 0;
                     insert = false;
-                    continue;
                 } else {
                     insert = true;
                     prev = i + 1;
                 }
-            }
-
-            if(!insert) {
+            } else if(insert) {
+                now += (int) A[1].charAt(i);
+            } else {
                 if(nowChecking >= targetLength || (A[1].charAt(i) != A[0].charAt(nowChecking))) {
                     while(i < n && A[1].charAt(i) != ' ') {
                         ++i;
@@ -39,10 +38,7 @@ public class HW04_4111056036_2 extends LanguageModel {
                 } else {
                     ++nowChecking;
                 }
-                continue;
             }
-
-            now += (int) A[1].charAt(i);
         }
 
         if(insert) {
@@ -54,6 +50,6 @@ public class HW04_4111056036_2 extends LanguageModel {
             }
         }
 
-		return A[1].substring(ansStart, ansEnd);
+        return A[1].substring(ansStart, ansEnd);
     }
 }
