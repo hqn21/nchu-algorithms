@@ -16,7 +16,7 @@ public class HW04_4111056036_3 extends LanguageModel {
                 Node<K, V>[] oldTable = table;
                 table = new Node[table.length << 1];
                 size = 0;
-                for (int i = 0; i < oldTable.length; i++) {
+                for (int i = 0; i < oldTable.length; ++i) {
                     Node<K, V> node = oldTable[i];
                     while (node != null) {
                         put(node.key, node.value);
@@ -53,7 +53,7 @@ public class HW04_4111056036_3 extends LanguageModel {
                 }
             }
     
-            size++;
+            ++size;
         }
     
         public V get(K key) {
