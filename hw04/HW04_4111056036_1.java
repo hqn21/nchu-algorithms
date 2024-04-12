@@ -37,8 +37,9 @@ public class HW04_4111056036_1 extends LanguageModel {
             ++nowChecking;
 
             if(nowChecking == targetLength) {
-                insert = true;
-                ++i;
+                if(i != n - 1 && A[1].charAt(++i) == ' ') {
+                    insert = true;
+                }
                 nowChecking = 0;
             }
         }
