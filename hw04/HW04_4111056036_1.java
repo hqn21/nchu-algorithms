@@ -14,6 +14,7 @@ public class HW04_4111056036_1 extends LanguageModel {
 
         for(int i = 0; i < n; ++i) {
             if(insert) {
+                prev = i;
                 while(i < n && A[1].charAt(i) != ' ') {
                     now += A[1].charAt(i);
                     ++i;
@@ -37,9 +38,7 @@ public class HW04_4111056036_1 extends LanguageModel {
 
             if(nowChecking == targetLength) {
                 insert = true;
-                now = 0;
                 ++i;
-                prev = i + 1;
                 nowChecking = 0;
             }
         }
