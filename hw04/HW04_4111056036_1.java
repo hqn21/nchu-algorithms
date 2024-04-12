@@ -13,40 +13,34 @@ public class HW04_4111056036_1 extends LanguageModel {
         boolean insert = false;
 
         for(int i = 0; i < n; ++i) {
-            if(A[1].charAt(i) == ' ') {
-                if(insert) {
-                    now = now % 1000;
-                    if(++record[now] > max) {
-                        max = record[now];
-                        ansStart = prev;
-                        ansEnd = i;
-                    }
-                    now = 0;
-                    insert = false;
-                } else {
-                    insert = true;
-                    prev = i + 1;
+            if(insert) {
+                while(i < n && A[1].charAt(i) != ' ') {
+                    now += A[1].charAt(i);
+                    ++i;
                 }
-            } else if(insert) {
-                now += (int) A[1].charAt(i);
-            } else {
-                if(nowChecking >= targetLength || (A[1].charAt(i) != A[0].charAt(nowChecking))) {
-                    while(i < n && A[1].charAt(i) != ' ') {
-                        ++i;
-                    }
-                    nowChecking = 0;
-                } else {
-                    ++nowChecking;
+                now %= 1000;
+                if(++record[now] > max) {
+                    max = record[now];
+                    ansStart = prev;
+                    ansEnd = i;
                 }
+                now = 0;
+                insert = false;
             }
-        }
 
-        if(insert) {
-            now = now % 1000;
-            if(++record[now] > max) {
-                max = record[now];
-                ansStart = prev;
-                ansEnd = n;
+            while(i < n && A[0].charAt(nowChecking) != A[1].charAt(i)) {
+                ++i;
+                nowChecking = 0;
+            }
+
+            ++nowChecking;
+
+            if(nowChecking == targetLength) {
+                insert = true;
+                now = 0;
+                ++i;
+                prev = i + 1;
+                nowChecking = 0;
             }
         }
 

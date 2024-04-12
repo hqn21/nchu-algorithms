@@ -15,7 +15,7 @@ public class HW04_4111056036_2 extends LanguageModel {
         for(int i = 0; i < n; ++i) {
             if(A[1].charAt(i) == ' ') {
                 if(insert) {
-                    now = now % 1000;
+                    now %= 1000;
                     if(++record[now] > max) {
                         max = record[now];
                         ansStart = prev;
@@ -28,7 +28,7 @@ public class HW04_4111056036_2 extends LanguageModel {
                     prev = i + 1;
                 }
             } else if(insert) {
-                now += (int) A[1].charAt(i);
+                now += A[1].charAt(i);
             } else {
                 if(nowChecking >= targetLength || (A[1].charAt(i) != A[0].charAt(nowChecking))) {
                     while(i < n && A[1].charAt(i) != ' ') {
@@ -42,7 +42,7 @@ public class HW04_4111056036_2 extends LanguageModel {
         }
 
         if(insert) {
-            now = now % 1000;
+            now %= 1000;
             if(++record[now] > max) {
                 max = record[now];
                 ansStart = prev;

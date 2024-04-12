@@ -136,7 +136,7 @@ public class HW04_4111056036_3 extends LanguageModel {
                     prev = i + 1;
                 }
             } else if(insert) {
-                now += (int) A[1].charAt(i);
+                now += A[1].charAt(i);
             } else {
                 if(nowChecking >= targetLength || (A[1].charAt(i) != A[0].charAt(nowChecking))) {
                     while(i < n && A[1].charAt(i) != ' ') {
