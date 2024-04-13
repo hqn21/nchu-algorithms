@@ -3,24 +3,24 @@ public class HW04_4111056036_5 extends LanguageModel {
     public String nextPredictToken(String[] A) {
         int[] record = new int[997];
         int targetLength = A[0].length();
+        int nowChecking = 0;
+        int now = 0;
         int n = A[1].length();
         int max = 0;
         int prev = 0;
         int ansStart = 0, ansEnd = 0;
 
-        int[] lps = computeLPSArray(A[0], targetLength);
-
-        int i = 0;
-        int j = 0;
-        while (i < n) {
-            if (A[0].charAt(j) == A[1].charAt(i)) {
-                j++;
-                i++;
+        for(int i = 0; i < n; ++i) {
+            while(i < n && A[0].charAt(nowChecking) != A[1].charAt(i)) {
+                ++i;
+                nowChecking = 0;
             }
-            if (j == targetLength) {
-                if(i < n && A[1].charAt(i) == ' ') {
+
+            ++nowChecking;
+
+            if(nowChecking == targetLength) {
+                if(++i < n && A[1].charAt(i) == ' ') {
                     prev = ++i;
-                    int now = 0;
                     while(i < n && A[1].charAt(i) != ' ') {
                         now += A[1].charAt(i);
                         ++i;
@@ -31,40 +31,12 @@ public class HW04_4111056036_5 extends LanguageModel {
                         ansStart = prev;
                         ansEnd = i;
                     }
+                    now = 0;
                 }
-                j = lps[j - 1];
-            } else if (i < n && A[0].charAt(j) != A[1].charAt(i)) {
-                if (j != 0) {
-                    j = lps[j - 1];
-                } else {
-                    i = i + 1;
-                }
+                nowChecking = 0;
             }
         }
 
         return A[1].substring(ansStart, ansEnd);
-    }
-
-    private int[] computeLPSArray(String pat, int M) {
-        int len = 0;
-        int i = 1;
-        int[] lps = new int[M];
-        lps[0] = 0;
-
-        while (i < M) {
-            if (pat.charAt(i) == pat.charAt(len)) {
-                len++;
-                lps[i] = len;
-                i++;
-            } else {
-                if (len != 0) {
-                    len = lps[len - 1];
-                } else {
-                    lps[i] = len;
-                    i++;
-                }
-            }
-        }
-        return lps;
     }
 }
