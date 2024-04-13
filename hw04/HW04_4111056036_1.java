@@ -13,7 +13,9 @@ public class HW04_4111056036_1 extends LanguageModel {
         for(int i = 0; i < n; ++i) {
             while(i < n && A[0].charAt(nowChecking) != A[1].charAt(i)) {
                 ++i;
-                nowChecking = 0;
+                if(nowChecking > 0) {
+                    nowChecking = 0;
+                }
             }
 
             ++nowChecking;
