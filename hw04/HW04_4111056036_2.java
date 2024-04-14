@@ -1,53 +1,71 @@
 public class HW04_4111056036_2 extends LanguageModel {
+    private class Node {
+        int value;
+        int from;
+        int to;
+        Node next;
+
+        public Node(int value, int from, int to) {
+            this.value = value;
+            this.from = from;
+            this.to = to;
+            this.next = null;
+        }
+    }
+
     @Override
     public String nextPredictToken(String[] A) {
-        int[] record = new int[1000];
+        int[] record = new int[997];
         int targetLength = A[0].length();
-        
         int nowChecking = 0;
         int now = 0;
         int n = A[1].length();
-        int max = 0;
         int prev = 0;
         int ansStart = 0, ansEnd = 0;
-        boolean insert = false;
+        Node head = null;
+        Node runner = null;
 
         for(int i = 0; i < n; ++i) {
-            if(A[1].charAt(i) == ' ') {
-                if(insert) {
-                    now %= 1000;
-                    if(++record[now] > max) {
-                        max = record[now];
-                        ansStart = prev;
-                        ansEnd = i;
-                    }
-                    now = 0;
-                    insert = false;
-                } else {
-                    insert = true;
-                    prev = i + 1;
+            while(i < n && A[0].charAt(nowChecking) != A[1].charAt(i)) {
+                ++i;
+                if(nowChecking > 0) {
+                    nowChecking = 0;
                 }
-            } else if(insert) {
-                now += A[1].charAt(i);
-            } else {
-                if(nowChecking >= targetLength || (A[1].charAt(i) != A[0].charAt(nowChecking))) {
+            }
+
+            ++nowChecking;
+
+            if(nowChecking == targetLength) {
+                if(++i < n && A[1].charAt(i) == ' ') {
+                    prev = ++i;
                     while(i < n && A[1].charAt(i) != ' ') {
+                        now += A[1].charAt(i);
                         ++i;
                     }
-                    nowChecking = 0;
-                } else {
-                    ++nowChecking;
+                    now %= 997;
+                    if(++record[now] == 1) {
+                        if(head == null) {
+                            head = new Node(now, prev, i);
+                            runner = head;
+                        } else {
+                            runner.next = new Node(now, prev, i);
+                            runner = runner.next;
+                        }
+                    }
+                    now = 0;
                 }
+                nowChecking = 0;
             }
         }
 
-        if(insert) {
-            now %= 1000;
-            if(++record[now] > max) {
-                max = record[now];
-                ansStart = prev;
-                ansEnd = n;
+        int max = 0;
+        while(head != null) {
+            if(record[head.value] > max) {
+                max = record[head.value];
+                ansStart = head.from;
+                ansEnd = head.to;
             }
+            head = head.next;
         }
 
         return A[1].substring(ansStart, ansEnd);
