@@ -27,6 +27,8 @@ public class HW05 {
 
     public static void main(String[] args) {
         HW05_4111056036_1 build1 = new HW05_4111056036_1();
+        HW05_4111056036_2 build2 = new HW05_4111056036_2();
         test(build1);
+        test(build2);
     }
 }
