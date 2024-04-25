@@ -1,4 +1,4 @@
-public class HW05_4111056036_2 extends WordChain {
+public class HW05_4111056036_4 extends WordChain {
     class HashMap<K, V> {
         private static final int DEFAULT_CAPACITY = 16;
         private static final float DEFAULT_LOAD_FACTOR = 0.75f;
@@ -108,26 +108,22 @@ public class HW05_4111056036_2 extends WordChain {
     }
 
     class Data {
-        int firstStart;
-        int firstEnd;
+        String firstString;
         float firstP;
-        int secondStart;
-        int secondEnd;
+        String secondString;
         float secondP;
 
-        public Data(int firstStart, int firstEnd, float firstP, int secondStart, int secondEnd, float secondP) {
-            this.firstStart = firstStart;
-            this.firstEnd = firstEnd;
+        public Data(String firstString, float firstP, String secondString, float secondP) {
+            this.firstString = firstString;
             this.firstP = firstP;
-            this.secondStart = secondStart;
-            this.secondEnd = secondEnd;
+            this.secondString = secondString;
             this.secondP = secondP;
         }
     }
 
     private HashMap<String, Data> cache = new HashMap<>();
 
-    private Data findTarget(String target, String A) {
+    private Data findTarget(String target, String A, boolean checkSecond) {
         Data result = cache.get(target);
         if (result != null) {
             return result;
@@ -166,7 +162,7 @@ public class HW05_4111056036_2 extends WordChain {
                         first = record[now];
                         firstStart = prev;
                         firstEnd = i;
-                    } else if(record[now] > second) {
+                    } else if(checkSecond && (record[now] > second)) {
                         second = record[now];
                         secondStart = prev;
                         secondEnd = i;
@@ -177,24 +173,29 @@ public class HW05_4111056036_2 extends WordChain {
             }
         }
 
-        result = new Data(firstStart, firstEnd, (float) first / sum, secondStart, secondEnd, (float) second / sum);
+        if(checkSecond) {
+            result =  new Data(A.substring(firstStart, firstEnd), (float) first / sum, A.substring(secondStart, secondEnd), (float) second / sum);
+        } else {
+            result = new Data(A.substring(firstStart, firstEnd), (float) first / sum, "", 0);
+        }
+
         cache.put(target, result);
         return result;
     }
 
     @Override
     public String sequenceProbability(String[] A) {
-        Data d1 = findTarget(A[0], A[1]);
-        Data d2_1 = findTarget(A[1].substring(d1.firstStart, d1.firstEnd), A[1]);
-        Data d2_2 = findTarget(A[1].substring(d1.secondStart, d1.secondEnd), A[1]);
+        Data d1 = findTarget(A[0], A[1], true);
+        Data d2_1 = findTarget(d1.firstString, A[1], false);
+        Data d2_2 = findTarget(d1.secondString, A[1], false);
 
         Data d3;
         if(d1.firstP * d2_1.firstP > d1.secondP * d2_2.firstP) {
-            d3 = findTarget(A[1].substring(d2_1.firstStart, d2_1.firstEnd), A[1]);
-            return A[0] + " " + A[1].substring(d1.firstStart, d1.firstEnd) + " " + A[1].substring(d2_1.firstStart, d2_1.firstEnd) + " " + A[1].substring(d3.firstStart, d3.firstEnd);
+            d3 = findTarget(d2_1.firstString, A[1], false);
+            return A[0] + " " + d1.firstString + " " + d2_1.firstString + " " + d3.firstString;
         } else {
-            d3 = findTarget(A[1].substring(d2_2.firstStart, d2_2.firstEnd), A[1]);
-            return A[0] + " " + A[1].substring(d1.secondStart, d1.secondEnd) + " " + A[1].substring(d2_2.firstStart, d2_2.firstEnd) + " " + A[1].substring(d3.firstStart, d3.firstEnd);
+            d3 = findTarget(d2_2.firstString, A[1], false);
+            return A[0] + " " + d1.firstString + " " + d2_2.firstString + " " + d3.firstString;
         }
     }
 }

@@ -29,8 +29,10 @@ public class HW05 {
         HW05_4111056036_1 build1 = new HW05_4111056036_1();
         HW05_4111056036_2 build2 = new HW05_4111056036_2();
         HW05_4111056036_3 build3 = new HW05_4111056036_3();
+        HW05_4111056036_4 build4 = new HW05_4111056036_4();
         test(build1);
         test(build2);
         test(build3);
+        test(build4);
     }
 }
