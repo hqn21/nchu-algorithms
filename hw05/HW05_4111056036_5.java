@@ -128,8 +128,6 @@ public class HW05_4111056036_5 extends WordChain {
         String[] checkList = new String[100];
         int checkAmount = 0;
         int targetLength = A[0].length();
-
-        // 找到所有 A[0] 後的詞
         int dataAmount = A[1].length();
         int nowChecking = 0;
         int dataId = 0;
