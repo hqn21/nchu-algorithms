@@ -125,6 +125,7 @@ public class HW05_4111056036_5 extends WordChain {
     public String sequenceProbability(String[] A) {
         HashMap<Integer, Data> record = new HashMap<Integer, Data>();
         String[] checkList = new String[100];
+        int[] checkIdList = new int[100];
         int checkAmount = 0;
         int targetLength = A[0].length();
         int dataAmount = A[1].length();
@@ -158,6 +159,7 @@ public class HW05_4111056036_5 extends WordChain {
                     dataInfo = record.get(dataId);
                     if(dataInfo == null) {
                         checkList[checkAmount] = A[1].substring(prev, i);
+                        checkIdList[checkAmount] = dataId;
                         ++checkAmount;
                         dataInfo = new Data(i - prev + 1, ++i, null);
                     } else {
@@ -172,10 +174,11 @@ public class HW05_4111056036_5 extends WordChain {
 
         for(int i = 0; i < checkAmount; ++i) {
             int sum1 = 0, sum2 = 0;
-            dataInfo = record.get(checkList[i].chars().sum());
+            dataInfo = record.get(checkIdList[i]);
 
             HashMap<Integer, Data> record2 = new HashMap<Integer, Data>();
             String[] checkList2 = new String[100];
+            int[] checkIdList2 = new int[100];
             int checkAmount2 = 0;
             Data dataInfo2;
 
@@ -204,6 +207,7 @@ public class HW05_4111056036_5 extends WordChain {
                         dataInfo2 = record2.get(dataId);
                         if(dataInfo2 == null) {
                             checkList2[checkAmount2] = A[1].substring(prev, j);
+                            checkIdList2[checkAmount2] = dataId;
                             ++checkAmount2;
                             dataInfo2 = new Data(j - prev + 1, ++j, dataInfo);
                         } else {
@@ -217,7 +221,7 @@ public class HW05_4111056036_5 extends WordChain {
             }
 
             for(int j = 0; j < checkAmount2; ++j) {
-                dataInfo2 = record2.get(checkList2[j].chars().sum());
+                dataInfo2 = record2.get(checkIdList2[j]);
                 HashMap<Integer, Data> record3 = new HashMap<Integer, Data>();
                 Data dataInfo3;
                 int[] checkList3 = new int[100];
