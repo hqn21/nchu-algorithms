@@ -109,14 +109,13 @@ public class HW05_4111056036_5 extends WordChain {
 
     class Data {
         int length;
-        int[] indexes;
+        int index;
         int indexAmount;
         Data prev;
 
         public Data(int length, int index, Data prev) {
             this.length = length;
-            this.indexes = new int[100];
-            this.indexes[0] = index;
+            this.index = index;
             this.indexAmount = 1;
             this.prev = prev;
         }
@@ -162,7 +161,6 @@ public class HW05_4111056036_5 extends WordChain {
                         ++checkAmount;
                         dataInfo = new Data(i - prev + 1, ++i, null);
                     } else {
-                        dataInfo.indexes[dataInfo.indexAmount] = ++i;
                         ++dataInfo.indexAmount;
                     }
                     record.put(dataId, dataInfo);
@@ -209,7 +207,6 @@ public class HW05_4111056036_5 extends WordChain {
                             ++checkAmount2;
                             dataInfo2 = new Data(j - prev + 1, ++j, dataInfo);
                         } else {
-                            dataInfo2.indexes[dataInfo2.indexAmount] = ++j;
                             ++dataInfo2.indexAmount;
                         }
                         record2.put(dataId, dataInfo2);
@@ -254,7 +251,6 @@ public class HW05_4111056036_5 extends WordChain {
                                 ++checkAmount3;
                                 dataInfo3 = new Data(k - prev + 1, ++k, dataInfo2);
                             } else {
-                                dataInfo3.indexes[dataInfo3.indexAmount] = ++k;
                                 ++dataInfo3.indexAmount;
                             }
                             record3.put(dataId, dataInfo3);
@@ -275,6 +271,6 @@ public class HW05_4111056036_5 extends WordChain {
             }
         }
 
-        return A[0] + " " + A[1].substring(maxData.prev.prev.indexes[0] - maxData.prev.prev.length, maxData.prev.prev.indexes[0] - 1) + " " + A[1].substring(maxData.prev.indexes[0] - maxData.prev.length, maxData.prev.indexes[0] - 1) + " " + A[1].substring(maxData.indexes[0] - maxData.length, maxData.indexes[0] - 1);    
+        return A[0] + " " + A[1].substring(maxData.prev.prev.index - maxData.prev.prev.length, maxData.prev.prev.index - 1) + " " + A[1].substring(maxData.prev.index - maxData.prev.length, maxData.prev.index - 1) + " " + A[1].substring(maxData.index - maxData.length, maxData.index - 1);    
     }
 }
