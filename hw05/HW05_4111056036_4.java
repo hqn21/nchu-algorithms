@@ -163,9 +163,9 @@ public class HW05_4111056036_4 extends WordChain {
         int dataId = 0;
         int prev = 0;
         
-        double firstTryProbability;
-        double probability;
-        double maxProbability = 0.0;
+        float firstTryProbability;
+        float probability;
+        float maxProbability = 0;
         Data maxData = new Data(0, 0, null);
 
         int[] hashTable = new int[997];
@@ -223,7 +223,7 @@ public class HW05_4111056036_4 extends WordChain {
             }
         }
 
-        firstTryProbability = (double) firstAmount / sum;
+        firstTryProbability = (float) firstAmount / sum;
         hashTable = new int[997];
         nowChecking = firstStart;
         int temp = 0;
@@ -260,7 +260,7 @@ public class HW05_4111056036_4 extends WordChain {
             }
         }
 
-        firstTryProbability *= (double) secondAmount / temp;
+        firstTryProbability *= (float) secondAmount / temp;
         hashTable = new int[997];
         nowChecking = secondStart;
         temp = 0;
@@ -297,14 +297,14 @@ public class HW05_4111056036_4 extends WordChain {
             }
         }
 
-        firstTryProbability *= (double) thirdAmount / temp;
+        firstTryProbability *= (float) thirdAmount / temp;
 
         boolean firstTry = true;
 
         for(int i = 0; i < checkAmount; ++i) {
             dataInfo = record.get(checkIdList[i]);
 
-            probability = (double) dataInfo.indexAmount / sum;
+            probability = (float) dataInfo.indexAmount / sum;
 
             if(probability <= firstTryProbability) {
                 continue; 
@@ -359,7 +359,7 @@ public class HW05_4111056036_4 extends WordChain {
             sum2 = 0;
             for(int j = 0; j < checkAmount2; ++j) {
                 dataInfo2 = record2.get(checkIdList2[j]);
-                probability = ((double) dataInfo.indexAmount / sum) * ((double) dataInfo2.indexAmount / sum1);
+                probability = ((float) dataInfo.indexAmount / sum) * ((float) dataInfo2.indexAmount / sum1);
 
                 if(probability <= firstTryProbability) {
                     continue;
@@ -409,7 +409,7 @@ public class HW05_4111056036_4 extends WordChain {
 
                 for(int k = 0; k < checkAmount3; ++k) {
                     dataInfo3 = record3.get(checkIdList3[k]);
-                    probability = ((double) dataInfo3.indexAmount / sum2) * ((double) dataInfo3.prev.indexAmount / sum1) * ((double) dataInfo3.prev.prev.indexAmount / sum);
+                    probability = ((float) dataInfo3.indexAmount / sum2) * ((float) dataInfo3.prev.indexAmount / sum1) * ((float) dataInfo3.prev.prev.indexAmount / sum);
                     if(probability <= firstTryProbability) {
                         continue;
                     } else {
