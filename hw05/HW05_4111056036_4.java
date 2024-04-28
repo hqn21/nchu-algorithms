@@ -157,18 +157,31 @@ public class HW05_4111056036_4 extends WordChain {
         int sum2;
 
         int targetLength = A[0].length();
-        int dataAmount = A[1].length();
+        int dataLength = A[1].length();
 
         int nowChecking = 0;
         int dataId = 0;
         int prev = 0;
         
+        double firstTryProbability;
         double probability;
         double maxProbability = 0.0;
         Data maxData = new Data(0, 0, null);
 
-        for(int i = 0; i < dataAmount; ++i) {
-            while(i < dataAmount && A[0].charAt(nowChecking) != A[1].charAt(i)) {
+        int[] hashTable = new int[997];
+        int hashId;
+        int firstAmount = 0;
+        int firstStart = 0;
+        int firstEnd = 0;
+        int secondAmount = 0;
+        int secondStart = 0;
+        int secondEnd = 0;
+        int thirdAmount = 0;
+        int thirdStart = 0;
+        int thirdEnd = 0;
+
+        for(int i = 0; i < dataLength; ++i) {
+            while(i < dataLength && A[0].charAt(nowChecking) != A[1].charAt(i)) {
                 ++i;
                 if(nowChecking > 0) {
                     nowChecking = 0;
@@ -178,12 +191,19 @@ public class HW05_4111056036_4 extends WordChain {
             ++nowChecking;
 
             if(nowChecking == targetLength) {
-                if(++i < dataAmount && A[1].charAt(i) == ' ') {
+                if(++i < dataLength && A[1].charAt(i) == ' ') {
                     ++sum;
                     prev = ++i;
-                    while(i < dataAmount && A[1].charAt(i) != ' ') {
+                    while(i < dataLength && A[1].charAt(i) != ' ') {
                         dataId += A[1].charAt(i);
                         ++i;
+                    }
+
+                    hashId = dataId % 997;
+                    if(++hashTable[hashId] > firstAmount) {
+                        firstAmount = hashTable[hashId];
+                        firstStart = prev;
+                        firstEnd = i;
                     }
 
                     dataInfo = record.get(dataId);
@@ -197,15 +217,98 @@ public class HW05_4111056036_4 extends WordChain {
                     }
                     record.put(dataId, dataInfo);
                     dataId = 0;
+                    i = prev - 1;
                 }
                 nowChecking = 0;
             }
         }
 
+        firstTryProbability = (double) firstAmount / sum;
+        hashTable = new int[997];
+        nowChecking = firstStart;
+        int temp = 0;
+
+        for(int i = 0; i < dataLength; ++i) {
+            while(i < dataLength && A[1].charAt(nowChecking) != A[1].charAt(i)) {
+                ++i;
+                if(nowChecking > firstStart) {
+                    nowChecking = firstStart;
+                }
+            }
+
+            ++nowChecking;
+
+            if(nowChecking == firstEnd) {
+                if(++i < dataLength && A[1].charAt(i) == ' ') {
+                    ++temp;
+                    prev = ++i;
+                    while(i < dataLength && A[1].charAt(i) != ' ') {
+                        dataId += A[1].charAt(i);
+                        ++i;
+                    }
+
+                    hashId = dataId % 997;
+                    if(++hashTable[hashId] > secondAmount) {
+                        secondAmount = hashTable[hashId];
+                        secondStart = prev;
+                        secondEnd = i;
+                    }
+                    i = prev - 1;
+                    dataId = 0;
+                }
+                nowChecking = firstStart;
+            }
+        }
+
+        firstTryProbability *= (double) secondAmount / temp;
+        hashTable = new int[997];
+        nowChecking = secondStart;
+        temp = 0;
+
+        for(int i = 0; i < dataLength; ++i) {
+            while(i < dataLength && A[1].charAt(nowChecking) != A[1].charAt(i)) {
+                ++i;
+                if(nowChecking > secondStart) {
+                    nowChecking = secondStart;
+                }
+            }
+
+            ++nowChecking;
+
+            if(nowChecking == secondEnd) {
+                if(++i < dataLength && A[1].charAt(i) == ' ') {
+                    ++temp;
+                    prev = ++i;
+                    while(i < dataLength && A[1].charAt(i) != ' ') {
+                        dataId += A[1].charAt(i);
+                        ++i;
+                    }
+
+                    hashId = dataId % 997;
+                    if(++hashTable[hashId] > thirdAmount) {
+                        thirdAmount = hashTable[hashId];
+                        thirdStart = prev;
+                        thirdEnd = i;
+                    }
+                    i = prev - 1;
+                    dataId = 0;
+                }
+                nowChecking = secondStart;
+            }
+        }
+
+        firstTryProbability *= (double) thirdAmount / temp;
+
+        boolean firstTry = true;
+
         for(int i = 0; i < checkAmount; ++i) {
-            sum1 = 0;
-            sum2 = 0;
             dataInfo = record.get(checkIdList[i]);
+
+            probability = (double) dataInfo.indexAmount / sum;
+
+            if(probability <= firstTryProbability) {
+                continue; 
+            }
 
             record2 = new HashMap<Integer, Data>();
             checkList2 = new Position[100];
@@ -215,8 +318,10 @@ public class HW05_4111056036_4 extends WordChain {
             nowChecking = checkList[i].start;
             prev = 0;
             dataId = 0;
-            for(int j = 0; j < dataAmount; ++j) {
-                while(j < dataAmount && A[1].charAt(nowChecking) != A[1].charAt(j)) {
+
+            sum1 = 0;
+            for(int j = 0; j < dataLength; ++j) {
+                while(j < dataLength && A[1].charAt(nowChecking) != A[1].charAt(j)) {
                     ++j;
                     if(nowChecking > checkList[i].start) {
                         nowChecking = checkList[i].start;
@@ -226,10 +331,10 @@ public class HW05_4111056036_4 extends WordChain {
                 ++nowChecking;
     
                 if(nowChecking == checkList[i].end) {
-                    if(++j < dataAmount && A[1].charAt(j) == ' ') {
+                    if(++j < dataLength && A[1].charAt(j) == ' ') {
                         ++sum1;
                         prev = ++j;
-                        while(j < dataAmount && A[1].charAt(j) != ' ') {
+                        while(j < dataLength && A[1].charAt(j) != ' ') {
                             dataId += A[1].charAt(j);
                             ++j;
                         }
@@ -245,13 +350,21 @@ public class HW05_4111056036_4 extends WordChain {
                         }
                         record2.put(dataId, dataInfo2);
                         dataId = 0;
+                        j = prev - 1;
                     }
                     nowChecking = checkList[i].start;
                 }
             }
 
+            sum2 = 0;
             for(int j = 0; j < checkAmount2; ++j) {
                 dataInfo2 = record2.get(checkIdList2[j]);
+                probability = ((double) dataInfo.indexAmount / sum) * ((double) dataInfo2.indexAmount / sum1);
+
+                if(probability <= firstTryProbability) {
+                    continue;
+                }
+
                 record3 = new HashMap<Integer, Data>();
                 checkIdList3 = new int[100];
                 checkAmount3 = 0;
@@ -259,8 +372,8 @@ public class HW05_4111056036_4 extends WordChain {
                 nowChecking = checkList2[j].start;
                 prev = 0;
                 dataId = 0;
-                for(int k = 0; k < dataAmount; ++k) {
-                    while(k < dataAmount && A[1].charAt(nowChecking) != A[1].charAt(k)) {
+                for(int k = 0; k < dataLength; ++k) {
+                    while(k < dataLength && A[1].charAt(nowChecking) != A[1].charAt(k)) {
                         ++k;
                         if(nowChecking > checkList2[j].start) {
                             nowChecking = checkList2[j].start;
@@ -270,10 +383,10 @@ public class HW05_4111056036_4 extends WordChain {
                     ++nowChecking;
         
                     if(nowChecking == checkList2[j].end) {
-                        if(++k < dataAmount && A[1].charAt(k) == ' ') {
+                        if(++k < dataLength && A[1].charAt(k) == ' ') {
                             ++sum2;
                             prev = ++k;
-                            while(k < dataAmount && A[1].charAt(k) != ' ') {
+                            while(k < dataLength && A[1].charAt(k) != ' ') {
                                 dataId += A[1].charAt(k);
                                 ++k;
                             }
@@ -288,6 +401,7 @@ public class HW05_4111056036_4 extends WordChain {
                             }
                             record3.put(dataId, dataInfo3);
                             dataId = 0;
+                            k = prev - 1;
                         }
                         nowChecking = checkList2[j].start;
                     }
@@ -296,7 +410,12 @@ public class HW05_4111056036_4 extends WordChain {
                 for(int k = 0; k < checkAmount3; ++k) {
                     dataInfo3 = record3.get(checkIdList3[k]);
                     probability = ((double) dataInfo3.indexAmount / sum2) * ((double) dataInfo3.prev.indexAmount / sum1) * ((double) dataInfo3.prev.prev.indexAmount / sum);
-                    // System.out.println(probability);
+                    if(probability <= firstTryProbability) {
+                        continue;
+                    } else {
+                        firstTry = false;
+                    }
+
                     if(probability > maxProbability) {
                         maxProbability = probability;
                         maxData = dataInfo3;
@@ -305,8 +424,10 @@ public class HW05_4111056036_4 extends WordChain {
             }
         }
 
-        // System.out.println(maxProbability);
-
-        return A[0] + " " + A[1].substring(maxData.prev.prev.index - maxData.prev.prev.length, maxData.prev.prev.index - 1) + " " + A[1].substring(maxData.prev.index - maxData.prev.length, maxData.prev.index - 1) + " " + A[1].substring(maxData.index - maxData.length, maxData.index - 1);    
+        if(firstTry) {
+            return A[0] + " " + A[1].substring(firstStart, firstEnd) + " " + A[1].substring(secondStart, secondEnd) + " " + A[1].substring(thirdStart, thirdEnd);
+        } else {
+            return A[0] + " " + A[1].substring(maxData.prev.prev.index - maxData.prev.prev.length, maxData.prev.prev.index - 1) + " " + A[1].substring(maxData.prev.index - maxData.prev.length, maxData.prev.index - 1) + " " + A[1].substring(maxData.index - maxData.length, maxData.index - 1);    
+        }
     }
 }
