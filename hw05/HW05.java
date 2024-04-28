@@ -40,7 +40,7 @@ public class HW05 {
         // test(build1);
         // test(build2);
         // test(build3);
-        // test(build4);
+        test(build4);
         test(build5);
     }
 }

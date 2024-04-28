@@ -108,39 +108,37 @@ public class HW05_4111056036_4 extends WordChain {
     }
 
     class Data {
-        String firstString;
-        float firstP;
-        String secondString;
-        float secondP;
+        int length;
+        int index;
+        int indexAmount;
+        Data prev;
 
-        public Data(String firstString, float firstP, String secondString, float secondP) {
-            this.firstString = firstString;
-            this.firstP = firstP;
-            this.secondString = secondString;
-            this.secondP = secondP;
+        public Data(int length, int index, Data prev) {
+            this.length = length;
+            this.index = index;
+            this.indexAmount = 1;
+            this.prev = prev;
         }
     }
 
-    private HashMap<String, Data> cache = new HashMap<>();
-
-    private Data findTarget(String target, String A, boolean checkSecond) {
-        Data result = cache.get(target);
-        if (result != null) {
-            return result;
-        }
-
-        int[] record = new int[997];
-        int targetLength = target.length();
+    @Override
+    public String sequenceProbability(String[] A) {
+        HashMap<Integer, Data> record = new HashMap<Integer, Data>();
+        String[] checkList = new String[100];
+        int[] checkIdList = new int[100];
+        int checkAmount = 0;
+        int targetLength = A[0].length();
+        int dataAmount = A[1].length();
         int nowChecking = 0;
-        int now = 0;
-        int n = A.length();
-        int first = 0, firstStart = 0, firstEnd = 0;
-        int second = 0, secondStart = 0, secondEnd = 0;
+        int dataId = 0;
         int prev = 0;
         int sum = 0;
+        Data dataInfo;
+        double maxProbability = 0.0;
+        Data maxData = new Data(0, 0, null);
 
-        for(int i = 0; i < n; ++i) {
-            while(i < n && target.charAt(nowChecking) != A.charAt(i)) {
+        for(int i = 0; i < dataAmount; ++i) {
+            while(i < dataAmount && A[0].charAt(nowChecking) != A[1].charAt(i)) {
                 ++i;
                 if(nowChecking > 0) {
                     nowChecking = 0;
@@ -150,52 +148,133 @@ public class HW05_4111056036_4 extends WordChain {
             ++nowChecking;
 
             if(nowChecking == targetLength) {
-                if(++i < n && A.charAt(i) == ' ') {
+                if(++i < dataAmount && A[1].charAt(i) == ' ') {
                     ++sum;
                     prev = ++i;
-                    while(i < n && A.charAt(i) != ' ') {
-                        now += A.charAt(i);
+                    while(i < dataAmount && A[1].charAt(i) != ' ') {
+                        dataId += A[1].charAt(i);
                         ++i;
                     }
-                    now %= 997;
-                    if(++record[now] > first) {
-                        first = record[now];
-                        firstStart = prev;
-                        firstEnd = i;
-                    } else if(checkSecond && (record[now] > second)) {
-                        second = record[now];
-                        secondStart = prev;
-                        secondEnd = i;
+
+                    dataInfo = record.get(dataId);
+                    if(dataInfo == null) {
+                        checkList[checkAmount] = A[1].substring(prev, i);
+                        checkIdList[checkAmount] = dataId;
+                        ++checkAmount;
+                        dataInfo = new Data(i - prev + 1, ++i, null);
+                    } else {
+                        ++dataInfo.indexAmount;
                     }
-                    now = 0;
+                    record.put(dataId, dataInfo);
+                    dataId = 0;
                 }
                 nowChecking = 0;
             }
         }
 
-        if(checkSecond) {
-            result =  new Data(A.substring(firstStart, firstEnd), (float) first / sum, A.substring(secondStart, secondEnd), (float) second / sum);
-        } else {
-            result = new Data(A.substring(firstStart, firstEnd), (float) first / sum, "", 0);
+        for(int i = 0; i < checkAmount; ++i) {
+            int sum1 = 0, sum2 = 0;
+            dataInfo = record.get(checkIdList[i]);
+
+            HashMap<Integer, Data> record2 = new HashMap<Integer, Data>();
+            String[] checkList2 = new String[100];
+            int[] checkIdList2 = new int[100];
+            int checkAmount2 = 0;
+            Data dataInfo2;
+
+            nowChecking = 0;
+            prev = 0;
+            dataId = 0;
+            for(int j = 0; j < dataAmount; ++j) {
+                while(j < dataAmount && checkList[i].charAt(nowChecking) != A[1].charAt(j)) {
+                    ++j;
+                    if(nowChecking > 0) {
+                        nowChecking = 0;
+                    }
+                }
+    
+                ++nowChecking;
+    
+                if(nowChecking == targetLength) {
+                    if(++j < dataAmount && A[1].charAt(j) == ' ') {
+                        ++sum1;
+                        prev = ++j;
+                        while(j < dataAmount && A[1].charAt(j) != ' ') {
+                            dataId += A[1].charAt(j);
+                            ++j;
+                        }
+    
+                        dataInfo2 = record2.get(dataId);
+                        if(dataInfo2 == null) {
+                            checkList2[checkAmount2] = A[1].substring(prev, j);
+                            checkIdList2[checkAmount2] = dataId;
+                            ++checkAmount2;
+                            dataInfo2 = new Data(j - prev + 1, ++j, dataInfo);
+                        } else {
+                            ++dataInfo2.indexAmount;
+                        }
+                        record2.put(dataId, dataInfo2);
+                        dataId = 0;
+                    }
+                    nowChecking = 0;
+                }
+            }
+
+            for(int j = 0; j < checkAmount2; ++j) {
+                dataInfo2 = record2.get(checkIdList2[j]);
+                HashMap<Integer, Data> record3 = new HashMap<Integer, Data>();
+                Data dataInfo3;
+                int[] checkList3 = new int[100];
+                int checkAmount3 = 0;
+
+                nowChecking = 0;
+                prev = 0;
+                dataId = 0;
+                for(int k = 0; k < dataAmount; ++k) {
+                    while(k < dataAmount && checkList2[j].charAt(nowChecking) != A[1].charAt(k)) {
+                        ++k;
+                        if(nowChecking > 0) {
+                            nowChecking = 0;
+                        }
+                    }
+        
+                    ++nowChecking;
+        
+                    if(nowChecking == targetLength) {
+                        if(++k < dataAmount && A[1].charAt(k) == ' ') {
+                            ++sum2;
+                            prev = ++k;
+                            while(k < dataAmount && A[1].charAt(k) != ' ') {
+                                dataId += A[1].charAt(k);
+                                ++k;
+                            }
+        
+                            dataInfo3 = record3.get(dataId);
+                            if(dataInfo3 == null) {
+                                checkList3[checkAmount3] = dataId;
+                                ++checkAmount3;
+                                dataInfo3 = new Data(k - prev + 1, ++k, dataInfo2);
+                            } else {
+                                ++dataInfo3.indexAmount;
+                            }
+                            record3.put(dataId, dataInfo3);
+                            dataId = 0;
+                        }
+                        nowChecking = 0;
+                    }
+                }
+
+                for(int k = 0; k < checkAmount3; ++k) {
+                    dataInfo3 = record3.get(checkList3[k]);
+                    double probability = ((double) dataInfo3.indexAmount / sum2) * ((double) dataInfo3.prev.indexAmount / sum1) * ((double) dataInfo3.prev.prev.indexAmount / sum);
+                    if(probability > maxProbability) {
+                        maxProbability = probability;
+                        maxData = dataInfo3;
+                    }
+                }
+            }
         }
 
-        cache.put(target, result);
-        return result;
-    }
-
-    @Override
-    public String sequenceProbability(String[] A) {
-        Data d1 = findTarget(A[0], A[1], true);
-        Data d2_1 = findTarget(d1.firstString, A[1], false);
-        Data d2_2 = findTarget(d1.secondString, A[1], false);
-
-        Data d3;
-        if(d1.firstP * d2_1.firstP > d1.secondP * d2_2.firstP) {
-            d3 = findTarget(d2_1.firstString, A[1], false);
-            return A[0] + " " + d1.firstString + " " + d2_1.firstString + " " + d3.firstString;
-        } else {
-            d3 = findTarget(d2_2.firstString, A[1], false);
-            return A[0] + " " + d1.firstString + " " + d2_2.firstString + " " + d3.firstString;
-        }
+        return A[0] + " " + A[1].substring(maxData.prev.prev.index - maxData.prev.prev.length, maxData.prev.prev.index - 1) + " " + A[1].substring(maxData.prev.index - maxData.prev.length, maxData.prev.index - 1) + " " + A[1].substring(maxData.index - maxData.length, maxData.index - 1);    
     }
 }
