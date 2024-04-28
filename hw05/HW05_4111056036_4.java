@@ -121,19 +121,49 @@ public class HW05_4111056036_4 extends WordChain {
         }
     }
 
+    class Position {
+        int start;
+        int end;
+
+        public Position(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
     @Override
     public String sequenceProbability(String[] A) {
         HashMap<Integer, Data> record = new HashMap<Integer, Data>();
-        String[] checkList = new String[100];
+        HashMap<Integer, Data> record2;
+        HashMap<Integer, Data> record3;
+
+        Position[] checkList = new Position[100];
         int[] checkIdList = new int[100];
         int checkAmount = 0;
+
+        Position[] checkList2;
+        int[] checkIdList2;
+        int checkAmount2;
+
+        int[] checkIdList3;
+        int checkAmount3;
+
+        Data dataInfo;
+        Data dataInfo2;
+        Data dataInfo3;
+
+        int sum = 0;
+        int sum1;
+        int sum2;
+
         int targetLength = A[0].length();
         int dataAmount = A[1].length();
+
         int nowChecking = 0;
         int dataId = 0;
         int prev = 0;
-        int sum = 0;
-        Data dataInfo;
+        
+        double probability;
         double maxProbability = 0.0;
         Data maxData = new Data(0, 0, null);
 
@@ -158,7 +188,7 @@ public class HW05_4111056036_4 extends WordChain {
 
                     dataInfo = record.get(dataId);
                     if(dataInfo == null) {
-                        checkList[checkAmount] = A[1].substring(prev, i);
+                        checkList[checkAmount] = new Position(prev, i);
                         checkIdList[checkAmount] = dataId;
                         ++checkAmount;
                         dataInfo = new Data(i - prev + 1, ++i, null);
@@ -173,29 +203,29 @@ public class HW05_4111056036_4 extends WordChain {
         }
 
         for(int i = 0; i < checkAmount; ++i) {
-            int sum1 = 0, sum2 = 0;
+            sum1 = 0;
+            sum2 = 0;
             dataInfo = record.get(checkIdList[i]);
 
-            HashMap<Integer, Data> record2 = new HashMap<Integer, Data>();
-            String[] checkList2 = new String[100];
-            int[] checkIdList2 = new int[100];
-            int checkAmount2 = 0;
-            Data dataInfo2;
+            record2 = new HashMap<Integer, Data>();
+            checkList2 = new Position[100];
+            checkIdList2 = new int[100];
+            checkAmount2 = 0;
 
-            nowChecking = 0;
+            nowChecking = checkList[i].start;
             prev = 0;
             dataId = 0;
             for(int j = 0; j < dataAmount; ++j) {
-                while(j < dataAmount && checkList[i].charAt(nowChecking) != A[1].charAt(j)) {
+                while(j < dataAmount && A[1].charAt(nowChecking) != A[1].charAt(j)) {
                     ++j;
-                    if(nowChecking > 0) {
-                        nowChecking = 0;
+                    if(nowChecking > checkList[i].start) {
+                        nowChecking = checkList[i].start;
                     }
                 }
     
                 ++nowChecking;
     
-                if(nowChecking == targetLength) {
+                if(nowChecking == checkList[i].end) {
                     if(++j < dataAmount && A[1].charAt(j) == ' ') {
                         ++sum1;
                         prev = ++j;
@@ -206,7 +236,7 @@ public class HW05_4111056036_4 extends WordChain {
     
                         dataInfo2 = record2.get(dataId);
                         if(dataInfo2 == null) {
-                            checkList2[checkAmount2] = A[1].substring(prev, j);
+                            checkList2[checkAmount2] = new Position(prev, j);
                             checkIdList2[checkAmount2] = dataId;
                             ++checkAmount2;
                             dataInfo2 = new Data(j - prev + 1, ++j, dataInfo);
@@ -216,31 +246,30 @@ public class HW05_4111056036_4 extends WordChain {
                         record2.put(dataId, dataInfo2);
                         dataId = 0;
                     }
-                    nowChecking = 0;
+                    nowChecking = checkList[i].start;
                 }
             }
 
             for(int j = 0; j < checkAmount2; ++j) {
                 dataInfo2 = record2.get(checkIdList2[j]);
-                HashMap<Integer, Data> record3 = new HashMap<Integer, Data>();
-                Data dataInfo3;
-                int[] checkList3 = new int[100];
-                int checkAmount3 = 0;
+                record3 = new HashMap<Integer, Data>();
+                checkIdList3 = new int[100];
+                checkAmount3 = 0;
 
-                nowChecking = 0;
+                nowChecking = checkList2[j].start;
                 prev = 0;
                 dataId = 0;
                 for(int k = 0; k < dataAmount; ++k) {
-                    while(k < dataAmount && checkList2[j].charAt(nowChecking) != A[1].charAt(k)) {
+                    while(k < dataAmount && A[1].charAt(nowChecking) != A[1].charAt(k)) {
                         ++k;
-                        if(nowChecking > 0) {
-                            nowChecking = 0;
+                        if(nowChecking > checkList2[j].start) {
+                            nowChecking = checkList2[j].start;
                         }
                     }
         
                     ++nowChecking;
         
-                    if(nowChecking == targetLength) {
+                    if(nowChecking == checkList2[j].end) {
                         if(++k < dataAmount && A[1].charAt(k) == ' ') {
                             ++sum2;
                             prev = ++k;
@@ -251,7 +280,7 @@ public class HW05_4111056036_4 extends WordChain {
         
                             dataInfo3 = record3.get(dataId);
                             if(dataInfo3 == null) {
-                                checkList3[checkAmount3] = dataId;
+                                checkIdList3[checkAmount3] = dataId;
                                 ++checkAmount3;
                                 dataInfo3 = new Data(k - prev + 1, ++k, dataInfo2);
                             } else {
@@ -260,13 +289,14 @@ public class HW05_4111056036_4 extends WordChain {
                             record3.put(dataId, dataInfo3);
                             dataId = 0;
                         }
-                        nowChecking = 0;
+                        nowChecking = checkList2[j].start;
                     }
                 }
 
                 for(int k = 0; k < checkAmount3; ++k) {
-                    dataInfo3 = record3.get(checkList3[k]);
-                    double probability = ((double) dataInfo3.indexAmount / sum2) * ((double) dataInfo3.prev.indexAmount / sum1) * ((double) dataInfo3.prev.prev.indexAmount / sum);
+                    dataInfo3 = record3.get(checkIdList3[k]);
+                    probability = ((double) dataInfo3.indexAmount / sum2) * ((double) dataInfo3.prev.indexAmount / sum1) * ((double) dataInfo3.prev.prev.indexAmount / sum);
+                    // System.out.println(probability);
                     if(probability > maxProbability) {
                         maxProbability = probability;
                         maxData = dataInfo3;
@@ -274,6 +304,8 @@ public class HW05_4111056036_4 extends WordChain {
                 }
             }
         }
+
+        // System.out.println(maxProbability);
 
         return A[0] + " " + A[1].substring(maxData.prev.prev.index - maxData.prev.prev.length, maxData.prev.prev.index - 1) + " " + A[1].substring(maxData.prev.index - maxData.prev.length, maxData.prev.index - 1) + " " + A[1].substring(maxData.index - maxData.length, maxData.index - 1);    
     }
