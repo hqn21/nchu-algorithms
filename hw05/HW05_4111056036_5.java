@@ -167,6 +167,7 @@ public class HW05_4111056036_5 extends WordChain {
                     }
                     record.put(dataId, dataInfo);
                     dataId = 0;
+                    i = prev - 1;
                 }
                 nowChecking = 0;
             }
@@ -181,6 +182,8 @@ public class HW05_4111056036_5 extends WordChain {
             int[] checkIdList2 = new int[100];
             int checkAmount2 = 0;
             Data dataInfo2;
+
+            targetLength = checkList[i].length();
 
             nowChecking = 0;
             prev = 0;
@@ -215,6 +218,7 @@ public class HW05_4111056036_5 extends WordChain {
                         }
                         record2.put(dataId, dataInfo2);
                         dataId = 0;
+                        j = prev - 1;
                     }
                     nowChecking = 0;
                 }
@@ -226,6 +230,8 @@ public class HW05_4111056036_5 extends WordChain {
                 Data dataInfo3;
                 int[] checkList3 = new int[100];
                 int checkAmount3 = 0;
+
+                targetLength = checkList2[j].length();
 
                 nowChecking = 0;
                 prev = 0;
@@ -259,6 +265,7 @@ public class HW05_4111056036_5 extends WordChain {
                             }
                             record3.put(dataId, dataInfo3);
                             dataId = 0;
+                            k = prev - 1;
                         }
                         nowChecking = 0;
                     }
