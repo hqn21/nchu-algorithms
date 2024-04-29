@@ -2,18 +2,10 @@ public class HW05_4111056036_1 extends WordChain {
     class Data {
         int firstStart;
         int firstEnd;
-        float firstP;
-        int secondStart;
-        int secondEnd;
-        float secondP;
 
-        public Data(int firstStart, int firstEnd, float firstP, int secondStart, int secondEnd, float secondP) {
+        public Data(int firstStart, int firstEnd) {
             this.firstStart = firstStart;
             this.firstEnd = firstEnd;
-            this.firstP = firstP;
-            this.secondStart = secondStart;
-            this.secondEnd = secondEnd;
-            this.secondP = secondP;
         }
     }
 
@@ -24,9 +16,7 @@ public class HW05_4111056036_1 extends WordChain {
         int now = 0;
         int n = A.length();
         int first = 0, firstStart = 0, firstEnd = 0;
-        int second = 0, secondStart = 0, secondEnd = 0;
         int prev = 0;
-        int sum = 0;
 
         for(int i = 0; i < n; ++i) {
             while(i < n && target.charAt(nowChecking) != A.charAt(i)) {
@@ -40,7 +30,6 @@ public class HW05_4111056036_1 extends WordChain {
 
             if(nowChecking == targetLength) {
                 if(++i < n && A.charAt(i) == ' ') {
-                    ++sum;
                     prev = ++i;
                     while(i < n && A.charAt(i) != ' ') {
                         now += A.charAt(i);
@@ -51,10 +40,6 @@ public class HW05_4111056036_1 extends WordChain {
                         first = record[now];
                         firstStart = prev;
                         firstEnd = i;
-                    } else if(record[now] > second) {
-                        second = record[now];
-                        secondStart = prev;
-                        secondEnd = i;
                     }
                     now = 0;
                 }
@@ -62,23 +47,15 @@ public class HW05_4111056036_1 extends WordChain {
             }
         }
 
-        return new Data(firstStart, firstEnd, (float) first / sum, secondStart, secondEnd, (float) second / sum);
+        return new Data(firstStart, firstEnd);
     }
 
 
     @Override
     public String sequenceProbability(String[] A) {
         Data d1 = findTarget(A[0], A[1]);
-        Data d2_1 = findTarget(A[1].substring(d1.firstStart, d1.firstEnd), A[1]);
-        Data d2_2 = findTarget(A[1].substring(d1.secondStart, d1.secondEnd), A[1]);
-
-        Data d3;
-        if(d1.firstP * d2_1.firstP > d1.secondP * d2_2.firstP) {
-            d3 = findTarget(A[1].substring(d2_1.firstStart, d2_1.firstEnd), A[1]);
-            return A[0] + " " + A[1].substring(d1.firstStart, d1.firstEnd) + " " + A[1].substring(d2_1.firstStart, d2_1.firstEnd) + " " + A[1].substring(d3.firstStart, d3.firstEnd);
-        } else {
-            d3 = findTarget(A[1].substring(d2_2.firstStart, d2_2.firstEnd), A[1]);
-            return A[0] + " " + A[1].substring(d1.secondStart, d1.secondEnd) + " " + A[1].substring(d2_2.firstStart, d2_2.firstEnd) + " " + A[1].substring(d3.firstStart, d3.firstEnd);
-        }
+        Data d2 = findTarget(A[1].substring(d1.firstStart, d1.firstEnd), A[1]);
+        Data d3 = findTarget(A[1].substring(d2.firstStart, d2.firstEnd), A[1]);;
+        return A[0] + " " + A[1].substring(d1.firstStart, d1.firstEnd) + " " + A[1].substring(d2.firstStart, d2.firstEnd) + " " + A[1].substring(d3.firstStart, d3.firstEnd);
     }
 }

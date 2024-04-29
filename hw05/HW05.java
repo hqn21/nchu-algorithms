@@ -38,10 +38,17 @@ public class HW05 {
         HW05_4111056036_4 build4 = new HW05_4111056036_4();
         HW05_4111056036_5 build5 = new HW05_4111056036_5();
         
+        System.out.println("======[Round1]======");
+        test(build1);
         test(build2);
         test(build3);
         test(build4);
         test(build5);
+        System.out.println("======[Round2]======");
         test(build1);
+        test(build2);
+        test(build3);
+        test(build4);
+        test(build5);
     }
 }
