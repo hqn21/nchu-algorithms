@@ -1,35 +1,19 @@
 public class HW05_4111056036_2 extends WordChain {
-    class Data {
-        int firstStart;
-        int firstEnd;
-        float firstP;
-        int secondStart;
-        int secondEnd;
-        float secondP;
-
-        public Data(int firstStart, int firstEnd, float firstP, int secondStart, int secondEnd, float secondP) {
-            this.firstStart = firstStart;
-            this.firstEnd = firstEnd;
-            this.firstP = firstP;
-            this.secondStart = secondStart;
-            this.secondEnd = secondEnd;
-            this.secondP = secondP;
-        }
-    }
-
-    private Data findTarget(String target, String A) {
-        int[] record = new int[997];
-        int targetLength = target.length();
-        int nowChecking = 0;
-        int now = 0;
-        int n = A.length();
+    @Override
+    public String sequenceProbability(String[] A) {
         int first = 0, firstStart = 0, firstEnd = 0;
         int second = 0, secondStart = 0, secondEnd = 0;
-        int prev = 0;
-        int sum = 0;
+        int third = 0, thirdStart = 0, thirdEnd = 0;
 
-        for(int i = 0; i < n; ++i) {
-            while(i < n && target.charAt(nowChecking) != A.charAt(i)) {
+        int[] record = new int[997];
+        int targetLength = A[0].length();
+        int dataLength = A[1].length();
+        int nowChecking = 0;
+        int dataId = 0;
+        int prev = 0;
+
+        for(int i = 0; i < dataLength; ++i) {
+            while(i < dataLength && A[0].charAt(nowChecking) != A[1].charAt(i)) {
                 ++i;
                 if(nowChecking > 0) {
                     nowChecking = 0;
@@ -39,38 +23,88 @@ public class HW05_4111056036_2 extends WordChain {
             ++nowChecking;
 
             if(nowChecking == targetLength) {
-                if(++i < n && A.charAt(i) == ' ') {
-                    ++sum;
+                if(++i < dataLength && A[1].charAt(i) == ' ') {
                     prev = ++i;
-                    while(i < n && A.charAt(i) != ' ') {
-                        now += A.charAt(i);
+                    while(i < dataLength && A[1].charAt(i) != ' ') {
+                        dataId += A[1].charAt(i);
                         ++i;
                     }
-                    now %= 997;
-                    if(++record[now] > first) {
-                        first = record[now];
+                    dataId %= 997;
+                    if(++record[dataId] > first) {
+                        first = record[dataId];
                         firstStart = prev;
                         firstEnd = i;
-                    } else if(record[now] > second) {
-                        second = record[now];
-                        secondStart = prev;
-                        secondEnd = i;
                     }
-                    now = 0;
+                    dataId = 0;
                 }
                 nowChecking = 0;
             }
         }
 
-        return new Data(firstStart, firstEnd, (float) first / sum, secondStart, secondEnd, (float) second / sum);
-    }
+        nowChecking = firstStart;
+        record = new int[997];
 
+        for(int i = 0; i < dataLength; ++i) {
+            while(i < dataLength && A[1].charAt(nowChecking) != A[1].charAt(i)) {
+                ++i;
+                if(nowChecking > firstStart) {
+                    nowChecking = firstStart;
+                }
+            }
 
-    @Override
-    public String sequenceProbability(String[] A) {
-        Data d1 = findTarget(A[0], A[1]);
-        Data d2 = findTarget(A[1].substring(d1.firstStart, d1.firstEnd), A[1]);
-        Data d3 = findTarget(A[1].substring(d2.firstStart, d2.firstEnd), A[1]);
-        return A[0] + " " + A[1].substring(d1.firstStart, d1.firstEnd) + " " + A[1].substring(d2.firstStart, d2.firstEnd) + " " + A[1].substring(d3.firstStart, d3.firstEnd);
+            ++nowChecking;
+
+            if(nowChecking == firstEnd) {
+                if(++i < dataLength && A[1].charAt(i) == ' ') {
+                    prev = ++i;
+                    while(i < dataLength && A[1].charAt(i) != ' ') {
+                        dataId += A[1].charAt(i);
+                        ++i;
+                    }
+                    dataId %= 997;
+                    if(++record[dataId] > second) {
+                        second = record[dataId];
+                        secondStart = prev;
+                        secondEnd = i;
+                    }
+                    dataId = 0;
+                }
+                nowChecking = firstStart;
+            }
+        }
+
+        nowChecking = secondStart;
+        record = new int[997];
+
+        for(int i = 0; i < dataLength; ++i) {
+            while(i < dataLength && A[1].charAt(nowChecking) != A[1].charAt(i)) {
+                ++i;
+                if(nowChecking > secondStart) {
+                    nowChecking = secondStart;
+                }
+            }
+
+            ++nowChecking;
+
+            if(nowChecking == secondEnd) {
+                if(++i < dataLength && A[1].charAt(i) == ' ') {
+                    prev = ++i;
+                    while(i < dataLength && A[1].charAt(i) != ' ') {
+                        dataId += A[1].charAt(i);
+                        ++i;
+                    }
+                    dataId %= 997;
+                    if(++record[dataId] > third) {
+                        third = record[dataId];
+                        thirdStart = prev;
+                        thirdEnd = i;
+                    }
+                    dataId = 0;
+                }
+                nowChecking = secondStart;
+            }
+        }
+
+        return A[0] + " " + A[1].substring(firstStart, firstEnd) + " " + A[1].substring(secondStart, secondEnd) + " " + A[1].substring(thirdStart, thirdEnd);
     }
 }
