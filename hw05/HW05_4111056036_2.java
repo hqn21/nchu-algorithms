@@ -1,110 +1,80 @@
 public class HW05_4111056036_2 extends WordChain {
     @Override
     public String sequenceProbability(String[] A) {
-        int first = 0, firstStart = 0, firstEnd = 0;
-        int second = 0, secondStart = 0, secondEnd = 0;
-        int third = 0, thirdStart = 0, thirdEnd = 0;
-
+        int firstStart = 0, firstEnd = 0, secondStart = 0, secondEnd = 0, thirdStart = 0, thirdEnd = 0;
+        String first, second, third;
+        String target = A[0] + " ";
+        int targetLength = target.length();
+        int start = A[1].indexOf(target);
+        int end;
         int[] record = new int[997];
-        int targetLength = A[0].length();
-        int dataLength = A[1].length();
-        int nowChecking = 0;
+        int max = 0;
         int dataId = 0;
-        int prev = 0;
-
-        for(int i = 0; i < dataLength; ++i) {
-            while(i < dataLength && A[0].charAt(nowChecking) != A[1].charAt(i)) {
-                ++i;
-                if(nowChecking > 0) {
-                    nowChecking = 0;
+        while(start != -1) {
+            start += targetLength;
+            end = A[1].indexOf(" ", start + 1);
+            if(end != -1) {
+                for(int i = start; i <= end; ++i) {
+                    dataId += A[1].charAt(i);
                 }
-            }
-
-            ++nowChecking;
-
-            if(nowChecking == targetLength) {
-                if(++i < dataLength && A[1].charAt(i) == ' ') {
-                    prev = ++i;
-                    while(i < dataLength && A[1].charAt(i) != ' ') {
-                        dataId += A[1].charAt(i);
-                        ++i;
-                    }
-                    dataId %= 997;
-                    if(++record[dataId] > first) {
-                        first = record[dataId];
-                        firstStart = prev;
-                        firstEnd = i;
-                    }
-                    dataId = 0;
+                dataId %= 997;
+                if(++record[dataId] > max) {
+                    max = record[dataId];
+                    firstStart = start;
+                    firstEnd = end;
                 }
-                nowChecking = 0;
+                dataId = 0;
             }
+            start = A[1].indexOf(target, start + 1);
         }
+        first = A[1].substring(firstStart, firstEnd) + " ";
 
-        nowChecking = firstStart;
+        targetLength = first.length();
+        start = A[1].indexOf(first);
         record = new int[997];
-
-        for(int i = 0; i < dataLength; ++i) {
-            while(i < dataLength && A[1].charAt(nowChecking) != A[1].charAt(i)) {
-                ++i;
-                if(nowChecking > firstStart) {
-                    nowChecking = firstStart;
+        max = 0;
+        while(start != -1) {
+            start += targetLength;
+            end = A[1].indexOf(" ", start + 1);
+            if(end != -1) {
+                for(int i = start; i <= end; ++i) {
+                    dataId += A[1].charAt(i);
                 }
-            }
-
-            ++nowChecking;
-
-            if(nowChecking == firstEnd) {
-                if(++i < dataLength && A[1].charAt(i) == ' ') {
-                    prev = ++i;
-                    while(i < dataLength && A[1].charAt(i) != ' ') {
-                        dataId += A[1].charAt(i);
-                        ++i;
-                    }
-                    dataId %= 997;
-                    if(++record[dataId] > second) {
-                        second = record[dataId];
-                        secondStart = prev;
-                        secondEnd = i;
-                    }
-                    dataId = 0;
+                dataId %= 997;
+                if(++record[dataId] > max) {
+                    max = record[dataId];
+                    secondStart = start;
+                    secondEnd = end;
                 }
-                nowChecking = firstStart;
+                dataId = 0;
             }
+            start = A[1].indexOf(first, start + 1);
         }
+        second = A[1].substring(secondStart, secondEnd) + " ";
 
-        nowChecking = secondStart;
+        targetLength = second.length();
+        start = A[1].indexOf(second);
         record = new int[997];
-
-        for(int i = 0; i < dataLength; ++i) {
-            while(i < dataLength && A[1].charAt(nowChecking) != A[1].charAt(i)) {
-                ++i;
-                if(nowChecking > secondStart) {
-                    nowChecking = secondStart;
+        max = 0;
+        while(start != -1) {
+            start += targetLength;
+            end = A[1].indexOf(" ", start + 1);
+            if(end != -1) {
+                for(int i = start; i <= end; ++i) {
+                    dataId += A[1].charAt(i);
                 }
-            }
-
-            ++nowChecking;
-
-            if(nowChecking == secondEnd) {
-                if(++i < dataLength && A[1].charAt(i) == ' ') {
-                    prev = ++i;
-                    while(i < dataLength && A[1].charAt(i) != ' ') {
-                        dataId += A[1].charAt(i);
-                        ++i;
-                    }
-                    dataId %= 997;
-                    if(++record[dataId] > third) {
-                        third = record[dataId];
-                        thirdStart = prev;
-                        thirdEnd = i;
-                    }
-                    dataId = 0;
+                dataId %= 997;
+                if(++record[dataId] > max) {
+                    max = record[dataId];
+                    thirdStart = start;
+                    thirdEnd = end;
                 }
-                nowChecking = secondStart;
+                dataId = 0;
             }
+            start = A[1].indexOf(second, start + 1);
         }
+        third = A[1].substring(thirdStart, thirdEnd);
 
-        return A[0] + " " + A[1].substring(firstStart, firstEnd) + " " + A[1].substring(secondStart, secondEnd) + " " + A[1].substring(thirdStart, thirdEnd);
+        return target + first + second + third;
     }
 }
