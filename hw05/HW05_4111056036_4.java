@@ -224,7 +224,7 @@ public class HW05_4111056036_4 extends WordChain {
         }
 
         firstTryProbability = (float) firstAmount / sum;
-        hashTable = new int[997];
+        java.util.Arrays.fill(hashTable, 0);
         nowChecking = firstStart;
         int temp = 0;
 
@@ -261,7 +261,7 @@ public class HW05_4111056036_4 extends WordChain {
         }
 
         firstTryProbability *= (float) secondAmount / temp;
-        hashTable = new int[997];
+        java.util.Arrays.fill(hashTable, 0);
         nowChecking = secondStart;
         temp = 0;
 
