@@ -7,7 +7,7 @@ public class HW05_4111056036_2 extends WordChain {
         int targetLength = target.length();
         int start = A[1].indexOf(target);
         int end;
-        int[] record = new int[997];
+        int[] record = new int[500];
         int max = 0;
         int dataId = 0;
         while(start != -1) {
@@ -17,7 +17,7 @@ public class HW05_4111056036_2 extends WordChain {
                 for(int i = start; i <= end; ++i) {
                     dataId += A[1].charAt(i);
                 }
-                dataId %= 997;
+                dataId %= 500;
                 if(++record[dataId] > max) {
                     max = record[dataId];
                     firstStart = start;
@@ -31,7 +31,7 @@ public class HW05_4111056036_2 extends WordChain {
 
         targetLength = first.length();
         start = A[1].indexOf(first);
-        record = new int[997];
+        record = new int[500];
         max = 0;
         while(start != -1) {
             start += targetLength;
@@ -40,7 +40,7 @@ public class HW05_4111056036_2 extends WordChain {
                 for(int i = start; i <= end; ++i) {
                     dataId += A[1].charAt(i);
                 }
-                dataId %= 997;
+                dataId %= 500;
                 if(++record[dataId] > max) {
                     max = record[dataId];
                     secondStart = start;
@@ -54,7 +54,7 @@ public class HW05_4111056036_2 extends WordChain {
 
         targetLength = second.length();
         start = A[1].indexOf(second);
-        record = new int[997];
+        record = new int[500];
         max = 0;
         while(start != -1) {
             start += targetLength;
@@ -63,7 +63,7 @@ public class HW05_4111056036_2 extends WordChain {
                 for(int i = start; i <= end; ++i) {
                     dataId += A[1].charAt(i);
                 }
-                dataId %= 997;
+                dataId %= 500;
                 if(++record[dataId] > max) {
                     max = record[dataId];
                     thirdStart = start;
