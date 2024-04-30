@@ -31,7 +31,7 @@ public class HW05_4111056036_2 extends WordChain {
 
         targetLength = first.length();
         start = A[1].indexOf(first);
-        record = new int[500];
+        java.util.Arrays.fill(record, 0);
         max = 0;
         while(start != -1) {
             start += targetLength;
@@ -54,7 +54,7 @@ public class HW05_4111056036_2 extends WordChain {
 
         targetLength = second.length();
         start = A[1].indexOf(second);
-        record = new int[500];
+        java.util.Arrays.fill(record, 0);
         max = 0;
         while(start != -1) {
             start += targetLength;
