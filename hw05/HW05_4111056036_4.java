@@ -168,7 +168,7 @@ public class HW05_4111056036_4 extends WordChain {
         float maxProbability = 0;
         Data maxData = new Data(0, 0, null);
 
-        int[] hashTable = new int[997];
+        int[] hashTable = new int[500];
         int hashId;
         int firstAmount = 0;
         int firstStart = 0;
@@ -199,7 +199,7 @@ public class HW05_4111056036_4 extends WordChain {
                         ++i;
                     }
 
-                    hashId = dataId % 997;
+                    hashId = dataId % 500;
                     if(++hashTable[hashId] > firstAmount) {
                         firstAmount = hashTable[hashId];
                         firstStart = prev;
@@ -247,7 +247,7 @@ public class HW05_4111056036_4 extends WordChain {
                         ++i;
                     }
 
-                    hashId = dataId % 997;
+                    hashId = dataId % 500;
                     if(++hashTable[hashId] > secondAmount) {
                         secondAmount = hashTable[hashId];
                         secondStart = prev;
@@ -284,7 +284,7 @@ public class HW05_4111056036_4 extends WordChain {
                         ++i;
                     }
 
-                    hashId = dataId % 997;
+                    hashId = dataId % 500;
                     if(++hashTable[hashId] > thirdAmount) {
                         thirdAmount = hashTable[hashId];
                         thirdStart = prev;
