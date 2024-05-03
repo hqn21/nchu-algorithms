@@ -6,7 +6,7 @@ public class HW05_4111056036_1 extends WordChain {
         int[] record = new int[100];
         boolean insert = false;
         int temp = 0;
-        int t;
+        int end;
         int max = 0;
         int i;
         for(i = 0; i < n; i += 3) {
@@ -27,7 +27,7 @@ public class HW05_4111056036_1 extends WordChain {
             insert = true;
         }
 
-        t = firstStart + 1;
+        end = firstStart + 1;
         insert = false;
         max = 0;
         java.util.Arrays.fill(record, 0);
@@ -43,13 +43,13 @@ public class HW05_4111056036_1 extends WordChain {
                 temp = 0;
                 continue;
             }
-            if(A[1].charAt(i) != A[1].charAt(firstStart) || A[1].charAt(i + 1) != A[1].charAt(t)) {
+            if(A[1].charAt(i) != A[1].charAt(firstStart) || A[1].charAt(i + 1) != A[1].charAt(end)) {
                 continue;
             }
             insert = true;
         }
 
-        t = secondStart + 1;
+        end = secondStart + 1;
         insert = false;
         max = 0;
         java.util.Arrays.fill(record, 0);
@@ -65,7 +65,7 @@ public class HW05_4111056036_1 extends WordChain {
                 temp = 0;
                 continue;
             }
-            if(A[1].charAt(i) != A[1].charAt(secondStart) || A[1].charAt(i + 1) != A[1].charAt(t)) {
+            if(A[1].charAt(i) != A[1].charAt(secondStart) || A[1].charAt(i + 1) != A[1].charAt(end)) {
                 continue;
             }
             insert = true;
