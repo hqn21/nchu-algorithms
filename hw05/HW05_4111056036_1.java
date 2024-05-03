@@ -7,7 +7,7 @@ public class HW05_4111056036_1 extends WordChain {
         int targetLength = target.length();
         int start = A[1].indexOf(target);
         int end;
-        int[] record = new int[100];
+        int[] record = new int[50];
         int max = 0;
         int dataId = 0;
         while(start != -1) {
@@ -17,7 +17,7 @@ public class HW05_4111056036_1 extends WordChain {
                 for(int i = start; i <= end; ++i) {
                     dataId += A[1].charAt(i);
                 }
-                dataId %= 100;
+                dataId %= 50;
                 if(++record[dataId] > max) {
                     max = record[dataId];
                     firstStart = start;
@@ -40,7 +40,7 @@ public class HW05_4111056036_1 extends WordChain {
                 for(int i = start; i <= end; ++i) {
                     dataId += A[1].charAt(i);
                 }
-                dataId %= 100;
+                dataId %= 50;
                 if(++record[dataId] > max) {
                     max = record[dataId];
                     secondStart = start;
@@ -63,7 +63,7 @@ public class HW05_4111056036_1 extends WordChain {
                 for(int i = start; i <= end; ++i) {
                     dataId += A[1].charAt(i);
                 }
-                dataId %= 100;
+                dataId %= 50;
                 if(++record[dataId] > max) {
                     max = record[dataId];
                     thirdStart = start;
