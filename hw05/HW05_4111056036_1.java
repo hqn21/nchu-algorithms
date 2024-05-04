@@ -5,67 +5,75 @@ public class HW05_4111056036_1 extends WordChain {
         int n = A[1].length();
         int[] record = new int[100];
         boolean insert = false;
-        int temp = 0;
-        int end;
         int max = 0;
         int i;
+        int nowCharStart;
+        int nowCharEnd;
+        int targetCharStart = A[0].charAt(0);
+        int targetCharEnd = A[0].charAt(1);
+
         for(i = 0; i < n; i += 3) {
+            nowCharStart = A[1].charAt(i);
+            nowCharEnd = A[1].charAt(i + 1);
             if(insert) {
-                temp = (A[1].charAt(i) + A[1].charAt(i + 1)) % 100;
-                if(++record[temp] > max) {
-                    max = record[temp];
+                nowCharStart = (nowCharStart + nowCharEnd) % 100;
+                if(++record[nowCharStart] > max) {
+                    max = record[nowCharStart];
                     firstStart = i;
                     firstEnd = i + 2;
                 }
                 insert = false;
-                temp = 0;
                 continue;
             }
-            if(A[1].charAt(i) != A[0].charAt(0) || A[1].charAt(i + 1) != A[0].charAt(1)) {
+            if(nowCharStart != targetCharStart || nowCharEnd != targetCharEnd) {
                 continue;
             }
             insert = true;
         }
 
-        end = firstStart + 1;
         insert = false;
         max = 0;
+        targetCharStart = A[1].charAt(firstStart);
+        targetCharEnd = A[1].charAt(firstStart + 1);
         java.util.Arrays.fill(record, 0);
         for(i = 0; i < n; i += 3) {
+            nowCharStart = A[1].charAt(i);
+            nowCharEnd = A[1].charAt(i + 1);
             if(insert) {
-                temp = (A[1].charAt(i) + A[1].charAt(i + 1)) % 100;
-                if(++record[temp] > max) {
-                    max = record[temp];
+                nowCharStart = (nowCharStart + nowCharEnd) % 100;
+                if(++record[nowCharStart] > max) {
+                    max = record[nowCharStart];
                     secondStart = i;
                     secondEnd = i + 2;
                 }
                 insert = false;
-                temp = 0;
                 continue;
             }
-            if(A[1].charAt(i) != A[1].charAt(firstStart) || A[1].charAt(i + 1) != A[1].charAt(end)) {
+            if(nowCharStart != targetCharStart || nowCharEnd != targetCharEnd) {
                 continue;
             }
             insert = true;
         }
 
-        end = secondStart + 1;
         insert = false;
         max = 0;
+        targetCharStart = A[1].charAt(secondStart);
+        targetCharEnd = A[1].charAt(secondStart + 1);
         java.util.Arrays.fill(record, 0);
         for(i = 0; i < n; i += 3) {
+            nowCharStart = A[1].charAt(i);
+            nowCharEnd = A[1].charAt(i + 1);
             if(insert) {
-                temp = (A[1].charAt(i) + A[1].charAt(i + 1)) % 100;
-                if(++record[temp] > max) {
-                    max = record[temp];
+                nowCharStart = (nowCharStart + nowCharEnd) % 100;
+                if(++record[nowCharStart] > max) {
+                    max = record[nowCharStart];
                     thirdStart = i;
                     thirdEnd = i + 2;
                 }
                 insert = false;
-                temp = 0;
                 continue;
             }
-            if(A[1].charAt(i) != A[1].charAt(secondStart) || A[1].charAt(i + 1) != A[1].charAt(end)) {
+            if(nowCharStart != targetCharStart || nowCharEnd != targetCharEnd) {
                 continue;
             }
             insert = true;
