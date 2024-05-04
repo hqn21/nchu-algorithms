@@ -96,6 +96,9 @@ public class HW06 {
     public static void main(String[] args) {
         HW06_4111056036_1 build1 = new HW06_4111056036_1();
         HW06_4111056036_2 build2 = new HW06_4111056036_2();
+        HW06_4111056036_3 build3 = new HW06_4111056036_3();
+        HW06_4111056036_4 build4 = new HW06_4111056036_4();
+        HW06_4111056036_5 build5 = new HW06_4111056036_5();
         Result result;
 
         for(int i = 1; i <= 9; ++i) {
@@ -106,6 +109,12 @@ public class HW06 {
             result = test(build2, i);
             System.out.println("Build 2: " + result.time + "s [" + (result.correct ? "CORRECT" : "WRONG") + "]");
             // printArray(result.ans);
+            result = test(build3, i);
+            System.out.println("Build 3: " + result.time + "s [" + (result.correct ? "CORRECT" : "WRONG") + "]");
+            result = test(build4, i);
+            System.out.println("Build 4: " + result.time + "s [" + (result.correct ? "CORRECT" : "WRONG") + "]");
+            result = test(build5, i);
+            System.out.println("Build 5: " + result.time + "s [" + (result.correct ? "CORRECT" : "WRONG") + "]");
             System.out.println("==================");
         }
     }
