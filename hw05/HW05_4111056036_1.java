@@ -79,6 +79,15 @@ public class HW05_4111056036_1 extends WordChain {
             insert = true;
         }
 
-        return A[0] + " " + A[1].substring(firstStart, firstEnd) + " " + A[1].substring(secondStart, secondEnd) + " " + A[1].substring(thirdStart, thirdEnd);
+        StringBuilder sb = new StringBuilder();
+        sb.append(A[0]);
+        sb.append(" ");
+        sb.append(A[1], firstStart, firstEnd);
+        sb.append(" ");
+        sb.append(A[1], secondStart, secondEnd);
+        sb.append(" ");
+        sb.append(A[1], thirdStart, thirdEnd);
+
+        return sb.toString();
     }
 }
