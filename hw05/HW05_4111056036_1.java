@@ -1,93 +1,62 @@
 public class HW05_4111056036_1 extends WordChain {
+    private static class Position {
+        int start;
+        int end;
+
+        public Position(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
+    private static Position greedyFind(String target, String A) {
+        int[] record = new int[100];
+        int start = A.indexOf(target);
+        int end;
+        int targetLength = target.length();
+        int dataId = 0;
+        int max = 0;
+        Position position = new Position(0, 0);
+
+        while(start != -1) {
+            start += targetLength;
+            end = A.indexOf(" ", start + 1);
+            if(end == -1) {
+                break;
+            }
+            for(int i = start; i <= end; ++i) {
+                dataId += A.charAt(i);
+            }
+            dataId %= 100;
+            if(++record[dataId] > max) {
+                max = record[dataId];
+                position.start = start;
+                position.end = end;
+            }
+            dataId = 0;
+            start = A.indexOf(target, start);
+        }
+        return position;
+    }
+
     @Override
     public String sequenceProbability(String[] A) {
-        int firstStart = 0, firstEnd = 0, secondStart = 0, secondEnd = 0, thirdStart = 0, thirdEnd = 0;
-        int n = A[1].length();
-        int[] record = new int[100];
-        boolean insert = false;
-        int max = 0;
-        int i;
-        int nowCharStart;
-        int nowCharEnd;
-        int targetCharStart = A[0].charAt(0);
-        int targetCharEnd = A[0].charAt(1);
-
-        for(i = 0; i < n; i += 3) {
-            nowCharStart = A[1].charAt(i);
-            nowCharEnd = A[1].charAt(i + 1);
-            if(insert) {
-                nowCharStart = (nowCharStart + nowCharEnd) % 100;
-                if(++record[nowCharStart] > max) {
-                    max = record[nowCharStart];
-                    firstStart = i;
-                    firstEnd = i + 2;
-                }
-                insert = false;
-                continue;
-            }
-            if(nowCharStart != targetCharStart || nowCharEnd != targetCharEnd) {
-                continue;
-            }
-            insert = true;
-        }
-
-        insert = false;
-        max = 0;
-        targetCharStart = A[1].charAt(firstStart);
-        targetCharEnd = A[1].charAt(firstStart + 1);
-        java.util.Arrays.fill(record, 0);
-        for(i = 0; i < n; i += 3) {
-            nowCharStart = A[1].charAt(i);
-            nowCharEnd = A[1].charAt(i + 1);
-            if(insert) {
-                nowCharStart = (nowCharStart + nowCharEnd) % 100;
-                if(++record[nowCharStart] > max) {
-                    max = record[nowCharStart];
-                    secondStart = i;
-                    secondEnd = i + 2;
-                }
-                insert = false;
-                continue;
-            }
-            if(nowCharStart != targetCharStart || nowCharEnd != targetCharEnd) {
-                continue;
-            }
-            insert = true;
-        }
-
-        insert = false;
-        max = 0;
-        targetCharStart = A[1].charAt(secondStart);
-        targetCharEnd = A[1].charAt(secondStart + 1);
-        java.util.Arrays.fill(record, 0);
-        for(i = 0; i < n; i += 3) {
-            nowCharStart = A[1].charAt(i);
-            nowCharEnd = A[1].charAt(i + 1);
-            if(insert) {
-                nowCharStart = (nowCharStart + nowCharEnd) % 100;
-                if(++record[nowCharStart] > max) {
-                    max = record[nowCharStart];
-                    thirdStart = i;
-                    thirdEnd = i + 2;
-                }
-                insert = false;
-                continue;
-            }
-            if(nowCharStart != targetCharStart || nowCharEnd != targetCharEnd) {
-                continue;
-            }
-            insert = true;
-        }
-
         StringBuilder sb = new StringBuilder();
         sb.append(A[0]);
         sb.append(" ");
-        sb.append(A[1], firstStart, firstEnd);
+        int oldLength = sb.length();
+        int newLength;
+        Position position = greedyFind(sb.toString(), A[1]);
+        sb.append(A[1].substring(position.start, position.end));
         sb.append(" ");
-        sb.append(A[1], secondStart, secondEnd);
+        newLength = sb.length();
+        position = greedyFind(sb.substring(oldLength, newLength), A[1]);
+        oldLength = newLength;
+        sb.append(A[1].substring(position.start, position.end));
         sb.append(" ");
-        sb.append(A[1], thirdStart, thirdEnd);
-
+        newLength = sb.length();
+        position = greedyFind(sb.substring(oldLength, newLength), A[1]);
+        sb.append(A[1].substring(position.start, position.end));
         return sb.toString();
     }
 }
