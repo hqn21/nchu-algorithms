@@ -1,8 +1,8 @@
 public class StopWatch {
-    private final long start = System.currentTimeMillis();
+    private final long start = System.nanoTime();
 
     public double elapsedTime() {
-        long now = System.currentTimeMillis();
-        return (now - start) / 1000.0;
+        long now = System.nanoTime();
+        return now - start;
     }
 }

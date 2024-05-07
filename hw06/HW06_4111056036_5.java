@@ -8,12 +8,11 @@ public class HW06_4111056036_5 extends SortIsAllYouNeed {
             insertionSort(A, i, Math.min((i + 31), (n - 1)));
         }
     
-        Double[] temp = new Double[n];
         for (int size = RUN; size < n; size = 2 * size) {
             for (int left = 0; left < n; left += 2 * size) {
                 int mid = Math.min(left + size - 1, n - 1);
                 int right = Math.min(left + 2 * size - 1, n - 1);
-                merge(A, temp, left, mid, right);
+                merge(A, left, mid, right);
             }
         }
         return A;
@@ -31,29 +30,33 @@ public class HW06_4111056036_5 extends SortIsAllYouNeed {
         }
     }
 
-    private void merge(Double[] A, Double[] temp, int left, int mid, int right) {
-        System.arraycopy(A, left, temp, left, right - left + 1);
+    private void merge(Double[] A, int left, int mid, int right) {
+        int len1 = mid - left + 1, len2 = right - mid;
+        Double[] leftArr = new Double[len1];
+        Double[] rightArr = new Double[len2];
+        System.arraycopy(A, left, leftArr, 0, len1);
+        System.arraycopy(A, mid + 1, rightArr, 0, len2);
 
-        int i = left, j = mid + 1, k = left;
-        while (i <= mid && j <= right) {
-            if (temp[i] <= temp[j]) {
-                A[k] = temp[i];
+        int i = 0, j = 0, k = left;
+        while (i < len1 && j < len2) {
+            if (leftArr[i] <= rightArr[j]) {
+                A[k] = leftArr[i];
                 i++;
             } else {
-                A[k] = temp[j];
+                A[k] = rightArr[j];
                 j++;
             }
             k++;
         }
 
-        while (i <= mid) {
-            A[k] = temp[i];
+        while (i < len1) {
+            A[k] = leftArr[i];
             i++;
             k++;
         }
 
-        while (j <= right) {
-            A[k] = temp[j];
+        while (j < len2) {
+            A[k] = rightArr[j];
             j++;
             k++;
         }

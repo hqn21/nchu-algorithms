@@ -104,17 +104,17 @@ public class HW06 {
         for(int i = 1; i <= 9; ++i) {
             System.out.println("=====[TEST " + i + "]=====");
             result = test(build1, i);
-            System.out.println("Build 1: " + result.time + "s\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
+            System.out.println("Build 1: " + result.time + "ns\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
             // printArray(result.ans);
             result = test(build2, i);
-            System.out.println("Build 2: " + result.time + "s\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
+            System.out.println("Build 2: " + result.time + "ns\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
             // printArray(result.ans);
             result = test(build3, i);
-            System.out.println("Build 3: " + result.time + "s\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
+            System.out.println("Build 3: " + result.time + "ns\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
             result = test(build4, i);
-            System.out.println("Build 4: " + result.time + "s\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
+            System.out.println("Build 4: " + result.time + "ns\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
             result = test(build5, i);
-            System.out.println("Build 5: " + result.time + "s\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
+            System.out.println("Build 5: " + result.time + "ns\t[" + (result.correct ? "CORRECT" : "WRONG") + "]");
             System.out.println("==================");
         }
     }

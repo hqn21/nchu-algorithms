@@ -1,64 +1,69 @@
 public class HW06_4111056036_4 extends SortIsAllYouNeed {
-    private static final int RUN = 32;
-
     @Override
     public Double[] sortWhat(Double[] A) {
-        int n = A.length;
-        for (int i = 0; i < n; i += RUN) {
-            insertionSort(A, i, Math.min((i + 31), (n - 1)));
-        }
-    
-        for (int size = RUN; size < n; size = 2 * size) {
-            for (int left = 0; left < n; left += 2 * size) {
-                int mid = Math.min(left + size - 1, n - 1);
-                int right = Math.min(left + 2 * size - 1, n - 1);
-                merge(A, left, mid, right);
-            }
-        }
+        quickSort(A, 0, A.length - 1);
         return A;
     }
 
-    private void insertionSort(Double[] A, int left, int right) {
-        for (int i = left + 1; i <= right; i++) {
-            Double temp = A[i];
-            int j = i - 1;
-            while (j >= left && A[j] > temp) {
+    private void quickSort(Double[] A, int low, int high) {
+        if (high - low <= 10) {
+            insertionSort(A, low, high);
+            return;
+        }
+
+        int pivotIndex = medianOfThree(A, low, high);
+        Double pivot = A[pivotIndex];
+        swap(A, pivotIndex, high);
+
+        int lt = low, gt = high;
+        int i = low;
+        while (i <= gt) {
+            if (A[i] < pivot) {
+                swap(A, lt++, i++);
+            } else if (A[i] > pivot) {
+                swap(A, i, gt--);
+            } else {
+                i++;
+            }
+        }
+
+        quickSort(A, low, lt - 1);
+        quickSort(A, gt + 1, high);
+    }
+
+    private void insertionSort(Double[] A, int low, int high) {
+        int i, j;
+        Double key;
+        for (i = low + 1; i <= high; i++) {
+            key = A[i];
+            j = i - 1;
+            while (j >= low && A[j] > key) {
                 A[j + 1] = A[j];
                 j--;
             }
-            A[j + 1] = temp;
+            A[j + 1] = key;
         }
     }
 
-    private void merge(Double[] A, int left, int mid, int right) {
-        int len1 = mid - left + 1, len2 = right - mid;
-        Double[] leftArr = new Double[len1];
-        Double[] rightArr = new Double[len2];
-        System.arraycopy(A, left, leftArr, 0, len1);
-        System.arraycopy(A, mid + 1, rightArr, 0, len2);
+    private int medianOfThree(Double[] A, int low, int high) {
+        int a = low + (int)(Math.random() * (high - low + 1));
+        int b = low + (int)(Math.random() * (high - low + 1));
+        int c = low + (int)(Math.random() * (high - low + 1));
 
-        int i = 0, j = 0, k = left;
-        while (i < len1 && j < len2) {
-            if (leftArr[i] <= rightArr[j]) {
-                A[k] = leftArr[i];
-                i++;
-            } else {
-                A[k] = rightArr[j];
-                j++;
-            }
-            k++;
+        if((A[a] >= A[b] && A[a] <= A[c]) || (A[a] >= A[c] && A[a] <= A[b])) {
+            return a;
         }
 
-        while (i < len1) {
-            A[k] = leftArr[i];
-            i++;
-            k++;
+        if((A[b] >= A[a] && A[b] <= A[c]) || (A[b] >= A[c] && A[b] <= A[a])) {
+            return b;
         }
 
-        while (j < len2) {
-            A[k] = rightArr[j];
-            j++;
-            k++;
-        }
+        return c;
+    }
+
+    private void swap(Double[] A, int i, int j) {
+        Double temp = A[i];
+        A[i] = A[j];
+        A[j] = temp;
     }
 }
