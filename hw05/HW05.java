@@ -12,22 +12,22 @@ public class HW05 {
         result = wc.sequenceProbability(a);
         time = stopWatch.elapsedTime();
         System.out.println("Result: " + result + " " + (result.equals("國立 中興 大學 學店") ? "[CORRECT]" : "[WRONG]"));
-        System.out.println("Time: " + time);
+        System.out.println("Time: " + time + "ns");
         stopWatch = new StopWatch();
         result = wc.sequenceProbability(b);
         time = stopWatch.elapsedTime();
         System.out.println("Result: " + result + " " + (result.equals("好棒 三點 美味 蟹堡") ? "[CORRECT]" : "[WRONG]"));
-        System.out.println("Time: " + time);
+        System.out.println("Time: " + time + "ns");
         stopWatch = new StopWatch();
         result = wc.sequenceProbability(c);
         time = stopWatch.elapsedTime();
         System.out.println("Result: " + result + " " + (result.equals("跑跑 爆哥 咖哩 爆飯") ? "[CORRECT]" : "[WRONG]"));
-        System.out.println("Time: " + time);
+        System.out.println("Time: " + time + "ns");
         stopWatch = new StopWatch();
         result = wc.sequenceProbability(d);
         time = stopWatch.elapsedTime();
         System.out.println("Result: " + result + " " + (result.equals("國立 中興 南區 國立") ? "[CORRECT]" : "[WRONG]"));
-        System.out.println("Time: " + time);
+        System.out.println("Time: " + time + "ns");
         System.out.println("====================");
     }
 
@@ -37,18 +37,20 @@ public class HW05 {
         HW05_4111056036_3 build3 = new HW05_4111056036_3();
         HW05_4111056036_4 build4 = new HW05_4111056036_4();
         HW05_4111056036_5 build5 = new HW05_4111056036_5();
+        HW05_4111056035_4 buildA = new HW05_4111056035_4();
         
-        System.out.println("======[Round1]======");
+        // System.out.println("======[Round1]======");
+        // test(build1);
+        // test(build2);
+        // test(build3);
+        // test(build4);
+        // test(build5);
+        // System.out.println("======[Round2]======");
         test(build1);
         test(build2);
         test(build3);
         test(build4);
         test(build5);
-        System.out.println("======[Round2]======");
-        test(build1);
-        test(build2);
-        test(build3);
-        test(build4);
-        test(build5);
+        test(buildA);
     }
 }

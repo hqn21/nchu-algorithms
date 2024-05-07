@@ -120,7 +120,7 @@ public class HW05_4111056036_5 extends WordChain {
     }
 
     private static Position greedyFind(String target, String A) {
-        int[] record = new int[100];
+        int[] record = new int[128];
         int start = A.indexOf(target);
         int end;
         int targetLength = target.length();
@@ -139,7 +139,7 @@ public class HW05_4111056036_5 extends WordChain {
             for(int i = start; i <= end; ++i) {
                 dataId += A.charAt(i);
             }
-            dataId %= 100;
+            dataId &= 127;
             if(++record[dataId] > max) {
                 max = record[dataId];
                 position.start = start;
@@ -154,8 +154,6 @@ public class HW05_4111056036_5 extends WordChain {
 
     private static void simpleFind(StringBuilder sb, String A, String[] targets, int targetAmount, float probability, float maxProbability, int level) {
 
-
-
     }
 
     @Override
@@ -164,14 +162,15 @@ public class HW05_4111056036_5 extends WordChain {
         String target = A[0] + " ", first, second;
         int targetLength = target.length();
 
-        int[] record = new int[100];
+        int[] record = new int[128];
         int start = A[1].indexOf(target);
         int end;
         int dataId = 0;
         int max = 0;
         int amount = 0;
         Position position = new Position(0, 0, 0);
-        String[] targets = new String[100];
+        Position[] targets = new Position[100];
+        HashMap<Integer, Integer> targetDatas = new HashMap<Integer, Integer>();
         float[] probabilities = new float[100];
 
         while(start != -1) {
@@ -180,13 +179,12 @@ public class HW05_4111056036_5 extends WordChain {
             if(end == -1) {
                 break;
             }
-            targets[amount] = A[1].substring(start, end) + " ";
-
-            ++amount;
+            // targets[amount] = 
+            // ++amount;
             for(int i = start; i <= end; ++i) {
                 dataId += A[1].charAt(i);
             }
-            dataId %= 100;
+            dataId &= 127;
             if(++record[dataId] > max) {
                 max = record[dataId];
                 position.start = start;
@@ -208,7 +206,7 @@ public class HW05_4111056036_5 extends WordChain {
         sb.append(first);
         sb.append(second);
         sb.append(A[1].substring(position.start, position.end));
-        simpleFind(sb, A[1], targets, amount, maxProbability, 1, 1);
+        // simpleFind(sb, A[1], targets, amount, maxProbability, 1, 1);
         return sb.toString();
     }
 }
