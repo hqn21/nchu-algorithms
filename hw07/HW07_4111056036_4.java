@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Stack;
+import java.util.Collections;
 
 public class HW07_4111056036_4 extends LSD {
     private class LinkedListQueue {
