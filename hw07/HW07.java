@@ -27,7 +27,7 @@ public class HW07 {
         LSD build4 = new HW07_4111056036_4();
         LSD build5 = new HW07_4111056036_5();
         test(build1);
-        // test(build2);
+        test(build2);
         test(build3);
         test(build4);
         test(build5);
