@@ -75,10 +75,6 @@ public class HW07_4111056036_3 extends LSD {
             return null;
         }
     
-        public int size() {
-            return size;
-        }
-    
         private int hash(Object key) {
             if (key == null) {
                 return 0;
@@ -117,11 +113,11 @@ public class HW07_4111056036_3 extends LSD {
         private Node<T> tail;
         private int size;
     
-        private static class Node<T> {
-            private T data;
-            private Node<T> next;
+        private class Node<K> {
+            private K data;
+            private Node<K> next;
     
-            public Node(T data, Node<T> next) {
+            public Node(K data, Node<K> next) {
                 this.data = data;
                 this.next = next;
             }
