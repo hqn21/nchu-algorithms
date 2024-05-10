@@ -1,14 +1,12 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Stack;
 
 public class HW07_4111056036_5 extends LSD {
-	private HashMap hmap;
+	private HashMap<Integer, ArrayList<Integer>> hmap;
 	private boolean[] visited;
 	private int[] distTo;
 	@Override
 	public int distance(int[][] array) {
-		hmap = new HashMap(array.length);
+		hmap = new HashMap<Integer, ArrayList<Integer>>();
 		
 		int maxNum = 0;
 		for(int i=0;i<array.length;i++) {
@@ -120,30 +118,108 @@ public class HW07_4111056036_5 extends LSD {
 			return (rear+1)%size == front;
 		}
 	}
-	class HashMap{
-		private LinkedList[] map;
-		private int size;
-		public HashMap(int size) {
-			this.size = size;
-			map = new LinkedList[size];
-			for(int i=0;i<size;i++) {
-				map[i] = new LinkedList();
-			}
-		}
-		public void put(int k,ArrayList<Integer> v) {
-			map[abs(Integer.hashCode(k)) & (size-1)].add(k, v);
-		}
-		public ArrayList<Integer> get(int k) {
-			return map[abs(Integer.hashCode(k)) & (size-1)].get(k);
-		}
-		private int abs(int n) {
-			if(n>0) return n;
-			else return -n;
-		}
-		public int size() {
-			return size;
-		}
-	}
+	private class HashMap<K, V> {
+        private static final int DEFAULT_CAPACITY = 16;
+        private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+        private Node<K, V>[] table;
+        private int size;
+    
+        @SuppressWarnings("unchecked")
+        public HashMap() {
+            this.table = new Node[DEFAULT_CAPACITY];
+        }
+    
+        @SuppressWarnings("unchecked")
+        private void grew() {
+            if ((size + 1) == (table.length * DEFAULT_LOAD_FACTOR)) {
+                Node<K, V>[] oldTable = table;
+                table = new Node[table.length << 1];
+                size = 0;
+                for (int i = 0; i < oldTable.length; ++i) {
+                    Node<K, V> node = oldTable[i];
+                    while (node != null) {
+                        put(node.key, node.value);
+                        node = node.next;
+                    }
+                }
+            }
+        }
+    
+        public void put(K key, V value) {
+            grew();
+    
+            int hash = hash(key);
+            int index = calcIndex(hash);
+            Node<K, V> node = table[index];
+            Node<K, V> newNode = new Node<>(key, value, null);
+            if (node == null) {
+                table[index] = newNode;
+            } else {
+                boolean keyRepeat = false;
+                Node<K, V> last = null;
+                while (node != null) {
+                    if (node.key.equals(key)) {
+                        keyRepeat = true;
+                        node.value = value;
+                        break;
+                    } else {
+                        last = node;
+                        node = node.next;
+                    }
+                }
+                if (!keyRepeat) {
+                    last.next = newNode;
+                }
+            }
+    
+            ++size;
+        }
+    
+        public V get(K key) {
+            int hash = hash(key);
+            int index = calcIndex(hash);
+            Node<K, V> node = table[index];
+            while (node != null) {
+                if (node.key.equals(key)) {
+                    return node.value;
+                } else {
+                    node = node.next;
+                }
+            }
+            return null;
+        }
+    
+        public int size() {
+            return size;
+        }
+    
+        private int hash(Object key) {
+            if (key == null) {
+                return 0;
+            }
+    
+            int h = key.hashCode();
+            h = h ^ (h >>> 16);
+    
+            return h;
+        }
+    
+        private int calcIndex(int hash) {
+            return  (table.length - 1) & hash;
+        }
+    
+        private class Node<E, A> {
+            E key;
+            A value;
+            Node<E, A> next;
+    
+            public Node(E key, A value, Node<E, A> next) {
+                this.key = key;
+                this.value = value;
+                this.next = next;
+            }
+        }
+    }
 	class LinkedList{
 		private class Node{
 			public int s;
