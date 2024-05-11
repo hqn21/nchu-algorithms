@@ -255,11 +255,13 @@ public class HW07_4111056036_5 extends LSD {
         for(int i = 0; i < n; ++i) {
             graph.addEdge(array[i][0], array[i][1]);
         }
-        marked = new boolean[graph.size];
-        edgeTo = new int[graph.size];
-        distTo = new int[graph.size];
 
-        for(int i = 0; i < graph.size; ++i) {
+        n = graph.size;        
+        marked = new boolean[n];
+        edgeTo = new int[n];
+        distTo = new int[n];
+
+        for(int i = 0; i < n; ++i) {
             bfs(graph, i);
             java.util.Arrays.fill(marked, false);
         }

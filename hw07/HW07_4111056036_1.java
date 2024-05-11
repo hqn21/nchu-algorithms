@@ -255,9 +255,11 @@ public class HW07_4111056036_1 extends LSD {
         for(int i = 0; i < n; ++i) {
             graph.addEdge(array[i][0], array[i][1]);
         }
-        marked = new boolean[graph.size];
-        edgeTo = new int[graph.size];
-        distTo = new int[graph.size];
+
+        n = graph.size;        
+        marked = new boolean[n];
+        edgeTo = new int[n];
+        distTo = new int[n];
 
         int farthestNode = bfs(graph, 0);
 
