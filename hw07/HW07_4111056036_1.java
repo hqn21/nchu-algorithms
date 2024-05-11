@@ -1,8 +1,16 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class HW07_4111056036_1 extends LSD {
+    private int maxDist;
+    private boolean[] marked;
+    private int[] edgeTo;
+    private int[] distTo;
+
     private class HashMap<K, V> {
         private static final int DEFAULT_CAPACITY = 16;
         private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-        public Node<K, V>[] table;
+        private Node<K, V>[] table;
         private int size;
     
         @SuppressWarnings("unchecked")
@@ -69,12 +77,8 @@ public class HW07_4111056036_1 extends LSD {
             }
             return null;
         }
-
-        public int size() {
-            return this.size;
-        }
     
-        public int hash(Object key) {
+        private int hash(Object key) {
             if (key == null) {
                 return 0;
             }
@@ -85,11 +89,11 @@ public class HW07_4111056036_1 extends LSD {
             return h;
         }
     
-        public int calcIndex(int hash) {
+        private int calcIndex(int hash) {
             return  (table.length - 1) & hash;
         }
     
-        public class Node<E, A> {
+        private class Node<E, A> {
             E key;
             A value;
             Node<E, A> next;
@@ -102,78 +106,166 @@ public class HW07_4111056036_1 extends LSD {
         }
     }
 
-    private class HashSet<E> {
-        public transient HashMap<E, Object> map;
+    private class LinkedList<T> {
+        private Node<T> head;
+        private Node<T> tail;
+        private int size;
     
-        private final Object PRESENT = new Object();
+        private class Node<K> {
+            private K data;
+            private Node<K> next;
     
-        public HashSet() {
-            map = new HashMap<>();
-        }
-    
-        public boolean add(E e) {
-            if(map.get(e) != null) {
-                return false;
+            public Node(K data, Node<K> next) {
+                this.data = data;
+                this.next = next;
             }
-            map.put(e, PRESENT);
-            return true;
         }
     
-        public int size() {
-            return map.size();
+        public LinkedList() {
+            head = null;
+            tail = null;
+            size = 0;
+        }
+    
+        public void addLast(T item) {
+            Node<T> newNode = new Node<T>(item, null);
+            if (tail == null) {
+                head = newNode;
+            } else {
+                tail.next = newNode;
+            }
+            tail = newNode;
+            size++;
+        }
+    
+        public T removeFirst() {
+            if (head == null) {
+                return null;
+            }
+            T item = head.data;
+            head = head.next;
+            if (head == null) {
+                tail = null;
+            }
+            size--;
+            return item;
+        }
+    
+        public boolean isEmpty() {
+            return size == 0;
         }
     }
 
-    @Override
-    public int distance(int[][] array) {
-        HashSet<Integer> nodes = new HashSet<>();
-        for (int[] edge : array) {
-            nodes.add(edge[0]);
-            nodes.add(edge[1]);
+   private class Queue<T> {
+        private LinkedList<T> list = new LinkedList<T>();
+    
+        public void enqueue(T item) {
+            list.addLast(item);
         }
-
-        int n = nodes.size();
-        HashMap<Integer, Integer> nodeToIndex = new HashMap<>();
-        int index = 0;
-
-        for(int i = 0; i < nodes.map.table.length; ++i) {
-            if(nodes.map.table[i] != null) {
-                nodeToIndex.put(nodes.map.table[i].key, index++);
+    
+        public T dequeue() {
+            if (list.isEmpty()) {
+                return null;
             }
+            return list.removeFirst();
+        }
+    
+        public boolean isEmpty() {
+            return list.isEmpty();
+        }
+    }
+
+    private class Graph {
+        private HashMap<Integer, Integer> mapping;
+        private ArrayList<ArrayList<Integer>> adjacencyList;
+        public int size;
+
+        public Graph() {
+            this.mapping = new HashMap<Integer, Integer>();
+            this.adjacencyList = new ArrayList<>();
+            this.size = 0;
         }
 
-        int[][] dist = new int[n][n];
-        int i, j, k;
-        for (i = 0; i < n; i++) {
-            java.util.Arrays.fill(dist[i], Integer.MAX_VALUE);
-            dist[i][i] = 0;
+        public void addEdge(int from, int to) {
+            Integer fromId = mapping.get(from);
+            Integer toId = mapping.get(to);
+
+            if(fromId == null) {
+                fromId = size;
+                this.mapping.put(from, fromId);
+                this.adjacencyList.add(new ArrayList<Integer>());
+                ++size;
+            }
+
+            if(toId == null) {
+                toId = this.size;
+                this.mapping.put(to, toId);
+                ++this.size;
+                this.adjacencyList.add(new ArrayList<Integer>());
+            }
+
+            this.adjacencyList.get(fromId).add(toId);
+            this.adjacencyList.get(toId).add(fromId);
         }
 
-        int u, v;
-        for (int[] edge : array) {
-            u = nodeToIndex.get(edge[0]);
-            v = nodeToIndex.get(edge[1]);
-            dist[u][v] = dist[v][u] = 1;
+        public Iterable<Integer> adjacencyList(int id) {
+            ArrayList<Integer> adjList = this.adjacencyList.get(id);
+            if (adjList == null) {
+                return Collections.emptyList();
+            }
+            return adjList;
         }
+    }
 
-        for (k = 0; k < n; k++) {
-            for (i = 0; i < n; i++) {
-                for (j = 0; j < n; j++) {
-                    if (dist[i][k] != Integer.MAX_VALUE && dist[k][j] != Integer.MAX_VALUE) {
-                        dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
+    private int bfs(Graph graph, int s) {
+        Queue<Integer> queue = new Queue<>();
+        queue.enqueue(s);
+        marked[s] = true;
+        distTo[s] = 0;
+        
+        int v;
+        int lastNode = s;
+        int distToV;
+        while(!queue.isEmpty()) {
+            v = queue.dequeue();
+            lastNode = v;
+            distToV = distTo[v] + 1;
+            for(int w : graph.adjacencyList(v)) {
+                if(marked[w] == false) {
+                    queue.enqueue(w);
+                    marked[w] = true;
+                    edgeTo[w] = v;
+                    distTo[w] = distToV;
+                    if(distTo[w] > maxDist) {
+                        maxDist = distTo[w];
                     }
                 }
             }
         }
 
-        int maxDist = 0;
-        for (i = 0; i < n; i++) {
-            for (j = 0; j < n; j++) {
-                if (dist[i][j] != Integer.MAX_VALUE) {
-                    maxDist = Math.max(maxDist, dist[i][j]);
-                }
-            }
+        return lastNode;
+    }
+
+    @Override
+    public int distance(int[][] array) {
+        maxDist = 0;
+        Graph graph = new Graph();
+        int n = array.length;
+
+        for(int i = 0; i < n; ++i) {
+            graph.addEdge(array[i][0], array[i][1]);
         }
+        marked = new boolean[graph.size];
+        edgeTo = new int[graph.size];
+        distTo = new int[graph.size];
+
+        int farthestNode = bfs(graph, 0);
+
+        java.util.Arrays.fill(marked, false);
+        java.util.Arrays.fill(edgeTo, 0);
+        java.util.Arrays.fill(distTo, 0);
+
+        bfs(graph, farthestNode);
 
         return maxDist;
     }
