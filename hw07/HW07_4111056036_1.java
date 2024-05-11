@@ -105,7 +105,7 @@ public class HW07_4111056036_1 extends LSD {
     private class HashSet<E> {
         public transient HashMap<E, Object> map;
     
-        private static final Object PRESENT = new Object();
+        private final Object PRESENT = new Object();
     
         public HashSet() {
             map = new HashMap<>();
