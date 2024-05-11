@@ -221,15 +221,17 @@ public class HW07_4111056036_3 extends LSD {
         
         int v;
         int lastNode = s;
+        int distToV;
         while(!queue.isEmpty()) {
             v = queue.dequeue();
             lastNode = v;
+            distToV = distTo.getOrDefault(v, 0) + 1;
             for(int w : graph.adjacencyList(v)) {
                 if(marked.get(w) == null) {
                     queue.enqueue(w);
                     marked.put(w, true);
                     edgeTo.put(w, v);
-                    distTo.put(w, distTo.getOrDefault(v, 0) + 1);
+                    distTo.put(w, distToV);
                     if(distTo.get(w) > maxDist) {
                         maxDist = distTo.get(w);
                     }
