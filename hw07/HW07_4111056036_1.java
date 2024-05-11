@@ -1,14 +1,8 @@
-import java.util.Stack;
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class HW07_4111056036_1 extends LSD {
-    private int maxDist;
-
-    class HashMap<K, V> {
+    private class HashMap<K, V> {
         private static final int DEFAULT_CAPACITY = 16;
         private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-        private Node<K, V>[] table;
+        public Node<K, V>[] table;
         private int size;
     
         @SuppressWarnings("unchecked")
@@ -75,12 +69,12 @@ public class HW07_4111056036_1 extends LSD {
             }
             return null;
         }
-    
+
         public int size() {
-            return size;
+            return this.size;
         }
     
-        private int hash(Object key) {
+        public int hash(Object key) {
             if (key == null) {
                 return 0;
             }
@@ -91,16 +85,11 @@ public class HW07_4111056036_1 extends LSD {
             return h;
         }
     
-        private int calcIndex(int hash) {
+        public int calcIndex(int hash) {
             return  (table.length - 1) & hash;
         }
-
-        public V getOrDefault(K key, V defaultValue) {
-            V value = get(key);
-            return (value != null) ? value : defaultValue;
-        }
     
-        private class Node<E, A> {
+        public class Node<E, A> {
             E key;
             A value;
             Node<E, A> next;
@@ -113,85 +102,76 @@ public class HW07_4111056036_1 extends LSD {
         }
     }
 
-    class Graph {
-        private HashMap<Integer, ArrayList<Integer>> adjacencyList;
-
-        public Graph() {
-            this.adjacencyList = new HashMap<Integer, ArrayList<Integer>>();
+    private class HashSet<E> {
+        public transient HashMap<E, Object> map;
+    
+        private static final Object PRESENT = new Object();
+    
+        public HashSet() {
+            map = new HashMap<>();
         }
-
-        public void addEdge(int from, int to) {
-            ArrayList<Integer> data = this.adjacencyList.get(from);
-
-            if(data == null) {
-                data = new ArrayList<>();
+    
+        public boolean add(E e) {
+            if(map.get(e) != null) {
+                return false;
             }
-            data.add(to);
-            this.adjacencyList.put(from, data);
-
-            data = this.adjacencyList.get(to);
-            if(data == null) {
-                data = new ArrayList<>();
-            }
-            data.add(from);
-            this.adjacencyList.put(to, data);
+            map.put(e, PRESENT);
+            return true;
         }
-
-        public Iterable<Integer> adjacencyList(int id) {
-            ArrayList<Integer> adjList = this.adjacencyList.get(id);
-            if (adjList == null) {
-                return Collections.emptyList();
-            }
-            return adjList;
-        }
-    }
-
-    private void bfs(Graph graph, int s) {
-        Stack<Integer> currentLevel = new Stack<>();
-        Stack<Integer> nextLevel = new Stack<>();
-        Stack<Integer> temp;
-        HashMap<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
-        HashMap<Integer, Integer> edgeTo = new HashMap<Integer, Integer>();
-        HashMap<Integer, Integer> distTo = new HashMap<Integer, Integer>();
-        currentLevel.push(s);
-        marked.put(s, true);
-        distTo.put(s, 0);
-        
-        int v;
-        while(!currentLevel.isEmpty()) {
-            v = currentLevel.pop();
-            for(int w : graph.adjacencyList(v)) {
-                if(marked.get(w) == null) {
-                    nextLevel.push(w);
-                    marked.put(w, true);
-                    edgeTo.put(w, v);
-                    distTo.put(w, distTo.getOrDefault(v, 0) + 1);
-                    if(distTo.get(w) > maxDist) {
-                        maxDist = distTo.get(w);
-                    }
-                }
-            }
-            if(currentLevel.isEmpty()) {
-                temp = currentLevel;
-                currentLevel = nextLevel;
-                nextLevel = temp;
-            }
+    
+        public int size() {
+            return map.size();
         }
     }
 
     @Override
     public int distance(int[][] array) {
-        maxDist = 0;
-        Graph graph = new Graph();
-        int n = array.length;
-
-        for(int i = 0; i < n; ++i) {
-            graph.addEdge(array[i][0], array[i][1]);
+        HashSet<Integer> nodes = new HashSet<>();
+        for (int[] edge : array) {
+            nodes.add(edge[0]);
+            nodes.add(edge[1]);
         }
 
-        for(int[] edge : array) {
-            for(int node : edge) {
-                bfs(graph, node);
+        int n = nodes.size();
+        HashMap<Integer, Integer> nodeToIndex = new HashMap<>();
+        int index = 0;
+
+        for(int i = 0; i < nodes.map.table.length; ++i) {
+            if(nodes.map.table[i] != null) {
+                nodeToIndex.put(nodes.map.table[i].key, index++);
+            }
+        }
+
+        int[][] dist = new int[n][n];
+        int i, j, k;
+        for (i = 0; i < n; i++) {
+            java.util.Arrays.fill(dist[i], Integer.MAX_VALUE);
+            dist[i][i] = 0;
+        }
+
+        int u, v;
+        for (int[] edge : array) {
+            u = nodeToIndex.get(edge[0]);
+            v = nodeToIndex.get(edge[1]);
+            dist[u][v] = dist[v][u] = 1;
+        }
+
+        for (k = 0; k < n; k++) {
+            for (i = 0; i < n; i++) {
+                for (j = 0; j < n; j++) {
+                    if (dist[i][k] != Integer.MAX_VALUE && dist[k][j] != Integer.MAX_VALUE) {
+                        dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
+                    }
+                }
+            }
+        }
+
+        int maxDist = 0;
+        for (i = 0; i < n; i++) {
+            for (j = 0; j < n; j++) {
+                if (dist[i][j] != Integer.MAX_VALUE) {
+                    maxDist = Math.max(maxDist, dist[i][j]);
+                }
             }
         }
 
