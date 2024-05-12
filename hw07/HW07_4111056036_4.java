@@ -1,151 +1,220 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HW07_4111056036_4 extends LSD {
-    private class LinkedListQueue {
-        private class QueueNode {
-            private int value;
-            private QueueNode next;
+    private int maxDist;
+    private boolean[] marked;
+    private int[] edgeTo;
+    private int[] distTo;
+    
+    private class HashTable {
+        private int size;
+        private Node[] nodes;
+    
+        public HashTable(int size) {
+            this.nodes = new Node[this.size = size];
+        }
+    
+        public int hash(int key) {
+            int hashKey = ((key % size) + size) % size;
+            while (nodes[hashKey] != null && nodes[hashKey].id != key) {
+                hashKey = (hashKey + 1) % size;
+            }
+    
+            return hashKey;
+        }
+    
+        public void put(int id, int value) {
+            int key = hash(id);
+            Node head = nodes[key];
+            if(head != null) {
+                return;
+            }
+            nodes[key] = new Node(id, value);
+        }
 
-            public QueueNode(int value) {
+        public Integer get(int id) {
+            int key = hash(id);
+            Node head = nodes[key];
+            if(head == null) {
+                return null;
+            }
+            return head.value;
+        }
+
+        private class Node {
+            int id, value;
+        
+            public Node(int id, int value) {
+                this.id = id;
                 this.value = value;
             }
         }
+    }
 
-        private QueueNode myHead;
-        private QueueNode myEnd;
-        private int size = 0;
-
-        public boolean add(int value) {
-            if (this.size == 0) {
-                this.myHead = this.myEnd = new QueueNode(value);
+    private class LinkedList<T> {
+        private Node<T> head;
+        private Node<T> tail;
+        private int size;
+    
+        private class Node<K> {
+            private K data;
+            private Node<K> next;
+    
+            public Node(K data, Node<K> next) {
+                this.data = data;
+                this.next = next;
+            }
+        }
+    
+        public LinkedList() {
+            head = null;
+            tail = null;
+            size = 0;
+        }
+    
+        public void addLast(T item) {
+            Node<T> newNode = new Node<T>(item, null);
+            if (tail == null) {
+                head = newNode;
             } else {
-                this.myEnd.next = new QueueNode(value);
-                this.myEnd = this.myEnd.next;
+                tail.next = newNode;
             }
-            this.size++;
-            return true;
+            tail = newNode;
+            size++;
         }
-
-        public int remove() {
-            QueueNode tmp = this.myHead;
-            if (this.size == 1) {
-                this.myHead = this.myEnd = null;
-            } else {
-                this.myHead = this.myHead.next;
+    
+        public T removeFirst() {
+            if (head == null) {
+                return null;
             }
-            this.size--;
-            return tmp.value;
-        }
-
-        public Boolean isEmpty() {
-            return this.size == 0;
-        }
-
-        public int[] toArray() {
-            int[] result = new int[this.size];
-            int counter = 0;
-            QueueNode ptr = this.myHead;
-            while (counter < this.size) {
-                result[counter++] = ptr.value;
-                ptr = ptr.next;
+            T item = head.data;
+            head = head.next;
+            if (head == null) {
+                tail = null;
             }
-            return result;
+            size--;
+            return item;
+        }
+    
+        public boolean isEmpty() {
+            return size == 0;
+        }
+    }
+
+   private class Queue<T> {
+        private LinkedList<T> list = new LinkedList<T>();
+    
+        public void enqueue(T item) {
+            list.addLast(item);
+        }
+    
+        public T dequeue() {
+            if (list.isEmpty()) {
+                return null;
+            }
+            return list.removeFirst();
+        }
+    
+        public boolean isEmpty() {
+            return list.isEmpty();
         }
     }
 
     private class Graph {
-        private ArrayList<Integer> vertices;
-        private ArrayList<ArrayList<Integer>> edges;
-        private int farthest_min_degree_vertex;
+        private HashTable mapping;
+        private ArrayList<ArrayList<Integer>> adjacencyList;
+        public int size;
 
         public Graph() {
-            this.vertices = new ArrayList<Integer>();
-            this.edges = new ArrayList<ArrayList<Integer>>();
+            this.mapping = new HashTable(2500);
+            this.adjacencyList = new ArrayList<>();
+            this.size = 0;
         }
 
-        public void add_edge(int from, int to) {
-            int from_index = this.vertices.indexOf(from);
-            int to_index = this.vertices.indexOf(to);
-            if (from_index == -1) {
-                this.vertices.add(from);
-                this.edges.add(new ArrayList<Integer>());
-                from_index = this.vertices.size() - 1;
+        public void addEdge(int from, int to) {
+            Integer fromId = mapping.get(from);
+            Integer toId = mapping.get(to);
+
+            if(fromId == null) {
+                fromId = size;
+                this.mapping.put(from, fromId);
+                this.adjacencyList.add(new ArrayList<Integer>());
+                ++size;
             }
-            if (to_index == -1) {
-                this.vertices.add(to);
-                this.edges.add(new ArrayList<Integer>());
-                to_index = this.vertices.size() - 1;
+
+            if(toId == null) {
+                toId = this.size;
+                this.mapping.put(to, toId);
+                ++this.size;
+                this.adjacencyList.add(new ArrayList<Integer>());
             }
-            this.edges.get(from_index).add(to_index);
-            this.edges.get(to_index).add(from_index);
+
+            this.adjacencyList.get(fromId).add(toId);
+            this.adjacencyList.get(toId).add(fromId);
         }
 
-        public int get_further_distance(int vertex) {
-            LinkedListQueue tmp_queue = new LinkedListQueue();
-            tmp_queue.add(vertex);
+        public Iterable<Integer> adjacencyList(int id) {
+            ArrayList<Integer> adjList = this.adjacencyList.get(id);
+            if (adjList == null) {
+                return Collections.emptyList();
+            }
+            return adjList;
+        }
+    }
 
-            boolean traveled[] = new boolean[this.vertices.size()];
-            traveled[vertex] = true;
-
-            int this_level = 1, next_level = 0, depth = 0;
-            boolean last_for_this_level;
-            int backup[] = new int[0];
-            while (!tmp_queue.isEmpty()) {
-                int this_vertex = tmp_queue.remove();
-                if (this_level == 1) {
-                    last_for_this_level = true;
-                } else {
-                    this_level--;
-                    last_for_this_level = false;
-                }
-                for (Integer next : this.edges.get(this_vertex)) {
-                    if (!traveled[next]) {
-                        traveled[next] = true;
-                        tmp_queue.add(next);
-                        next_level++;
+    private int bfs(Graph graph, int s) {
+        Queue<Integer> queue = new Queue<>();
+        queue.enqueue(s);
+        marked[s] = true;
+        distTo[s] = 0;
+        
+        int v;
+        int lastNode = s;
+        int distToV;
+        while(!queue.isEmpty()) {
+            v = queue.dequeue();
+            lastNode = v;
+            distToV = distTo[v] + 1;
+            for(int w : graph.adjacencyList(v)) {
+                if(marked[w] == false) {
+                    queue.enqueue(w);
+                    marked[w] = true;
+                    edgeTo[w] = v;
+                    distTo[w] = distToV;
+                    if(distTo[w] > maxDist) {
+                        maxDist = distTo[w];
                     }
                 }
-                if (last_for_this_level) {
-                    this_level = next_level;
-                    next_level = 0;
-                    if (!tmp_queue.isEmpty()) {
-                        depth++;
-                        backup = tmp_queue.toArray();
-                    }
-                }
             }
-
-            this.farthest_min_degree_vertex = this.vertices.size();
-            int degree, min_degree = this.vertices.size();
-            for (int farthest_vertex : backup) {
-                degree = this.edges.get(farthest_vertex).size();
-                if (degree < min_degree) {
-                    min_degree = degree;
-                    this.farthest_min_degree_vertex = farthest_vertex;
-                }
-            }
-
-            return depth;
         }
+
+        return lastNode;
     }
 
     @Override
     public int distance(int[][] array) {
-        Graph the_graph = new Graph();
-        for (int[] edge : array) {
-            the_graph.add_edge(edge[0], edge[1]);
+        maxDist = 0;
+        Graph graph = new Graph();
+        int n = array.length;
+
+        for(int i = 0; i < n; ++i) {
+            graph.addEdge(array[i][0], array[i][1]);
         }
 
-        int vertex = 0, depth = 0, max_depth = 0;
-        while (true) {
-            depth = the_graph.get_further_distance(vertex);
-            if (depth > max_depth) {
-                max_depth = depth;
-                vertex = the_graph.farthest_min_degree_vertex;
-            } else {
-                break;
-            }
-        }
-        return max_depth;
+        n = graph.size;        
+        marked = new boolean[n];
+        edgeTo = new int[n];
+        distTo = new int[n];
+
+        int farthestNode = bfs(graph, 0);
+
+        java.util.Arrays.fill(marked, false);
+        java.util.Arrays.fill(edgeTo, 0);
+        java.util.Arrays.fill(distTo, 0);
+
+        bfs(graph, farthestNode);
+
+        return maxDist;
     }
 }
