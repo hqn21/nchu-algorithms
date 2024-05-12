@@ -3,6 +3,9 @@ import java.util.Collections;
 
 public class HW07_4111056036_3 extends LSD {
     private int maxDist;
+    private boolean[] marked;
+    private int[] edgeTo;
+    private int[] distTo;
 
     private class HashMap<K, V> {
         private static final int DEFAULT_CAPACITY = 16;
@@ -89,11 +92,6 @@ public class HW07_4111056036_3 extends LSD {
         private int calcIndex(int hash) {
             return  (table.length - 1) & hash;
         }
-
-        public V getOrDefault(K key, V defaultValue) {
-            V value = get(key);
-            return (value != null) ? value : defaultValue;
-        }
     
         private class Node<E, A> {
             E key;
@@ -178,27 +176,36 @@ public class HW07_4111056036_3 extends LSD {
     }
 
     private class Graph {
-        private HashMap<Integer, ArrayList<Integer>> adjacencyList;
+        private HashMap<Integer, Integer> mapping;
+        private ArrayList<ArrayList<Integer>> adjacencyList;
+        public int size;
 
         public Graph() {
-            this.adjacencyList = new HashMap<Integer, ArrayList<Integer>>();
+            this.mapping = new HashMap<Integer, Integer>();
+            this.adjacencyList = new ArrayList<>();
+            this.size = 0;
         }
 
         public void addEdge(int from, int to) {
-            ArrayList<Integer> data = this.adjacencyList.get(from);
+            Integer fromId = mapping.get(from);
+            Integer toId = mapping.get(to);
 
-            if(data == null) {
-                data = new ArrayList<>();
+            if(fromId == null) {
+                fromId = size;
+                this.mapping.put(from, fromId);
+                this.adjacencyList.add(new ArrayList<Integer>());
+                ++size;
             }
-            data.add(to);
-            this.adjacencyList.put(from, data);
 
-            data = this.adjacencyList.get(to);
-            if(data == null) {
-                data = new ArrayList<>();
+            if(toId == null) {
+                toId = this.size;
+                this.mapping.put(to, toId);
+                ++this.size;
+                this.adjacencyList.add(new ArrayList<Integer>());
             }
-            data.add(from);
-            this.adjacencyList.put(to, data);
+
+            this.adjacencyList.get(fromId).add(toId);
+            this.adjacencyList.get(toId).add(fromId);
         }
 
         public Iterable<Integer> adjacencyList(int id) {
@@ -212,12 +219,9 @@ public class HW07_4111056036_3 extends LSD {
 
     private int bfs(Graph graph, int s) {
         Queue<Integer> queue = new Queue<>();
-        HashMap<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
-        HashMap<Integer, Integer> edgeTo = new HashMap<Integer, Integer>();
-        HashMap<Integer, Integer> distTo = new HashMap<Integer, Integer>();
         queue.enqueue(s);
-        marked.put(s, true);
-        distTo.put(s, 0);
+        marked[s] = true;
+        distTo[s] = 0;
         
         int v;
         int lastNode = s;
@@ -225,15 +229,15 @@ public class HW07_4111056036_3 extends LSD {
         while(!queue.isEmpty()) {
             v = queue.dequeue();
             lastNode = v;
-            distToV = distTo.getOrDefault(v, 0) + 1;
+            distToV = distTo[v] + 1;
             for(int w : graph.adjacencyList(v)) {
-                if(marked.get(w) == null) {
+                if(marked[w] == false) {
                     queue.enqueue(w);
-                    marked.put(w, true);
-                    edgeTo.put(w, v);
-                    distTo.put(w, distToV);
-                    if(distTo.get(w) > maxDist) {
-                        maxDist = distTo.get(w);
+                    marked[w] = true;
+                    edgeTo[w] = v;
+                    distTo[w] = distToV;
+                    if(distTo[w] > maxDist) {
+                        maxDist = distTo[w];
                     }
                 }
             }
@@ -252,7 +256,15 @@ public class HW07_4111056036_3 extends LSD {
             graph.addEdge(array[i][0], array[i][1]);
         }
 
-        int farthestNode = bfs(graph, array[0][0]);
+        n = graph.size;        
+        marked = new boolean[n];
+        edgeTo = new int[n];
+        distTo = new int[n];
+
+        int farthestNode = bfs(graph, 0);
+
+        java.util.Arrays.fill(marked, false);
+
         bfs(graph, farthestNode);
 
         return maxDist;
