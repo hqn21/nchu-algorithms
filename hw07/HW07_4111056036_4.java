@@ -6,13 +6,16 @@ public class HW07_4111056036_4 extends LSD {
     private boolean[] marked;
     private int[] edgeTo;
     private int[] distTo;
+    private ArrayList<ArrayList<Integer>> adjacencyList;
     
     private class HashTable {
+        public int counter;
         private int size;
         private Node[] nodes;
     
         public HashTable(int size) {
             this.nodes = new Node[this.size = size];
+            this.counter = 0;
         }
     
         public int hash(int key) {
@@ -23,21 +26,15 @@ public class HW07_4111056036_4 extends LSD {
     
             return hashKey;
         }
-    
-        public void put(int id, int value) {
-            int key = hash(id);
-            Node head = nodes[key];
-            if(head != null) {
-                return;
-            }
-            nodes[key] = new Node(id, value);
-        }
 
-        public Integer get(int id) {
+        public int get(int id) {
             int key = hash(id);
             Node head = nodes[key];
             if(head == null) {
-                return null;
+                nodes[key] = new Node(id, this.counter);
+                ++this.counter;
+                adjacencyList.add(new ArrayList<Integer>());
+                return this.counter - 1;
             }
             return head.value;
         }
@@ -123,39 +120,25 @@ public class HW07_4111056036_4 extends LSD {
 
     private class Graph {
         private HashTable mapping;
-        private ArrayList<ArrayList<Integer>> adjacencyList;
-        public int size;
 
         public Graph() {
-            this.mapping = new HashTable(2500);
-            this.adjacencyList = new ArrayList<>();
-            this.size = 0;
+            this.mapping = new HashTable(5000);
+            adjacencyList = new ArrayList<>();
         }
 
         public void addEdge(int from, int to) {
-            Integer fromId = mapping.get(from);
-            Integer toId = mapping.get(to);
+            int fromId = mapping.get(from);
+            int toId = mapping.get(to);
+            adjacencyList.get(fromId).add(toId);
+            adjacencyList.get(toId).add(fromId);
+        }
 
-            if(fromId == null) {
-                fromId = size;
-                this.mapping.put(from, fromId);
-                this.adjacencyList.add(new ArrayList<Integer>());
-                ++size;
-            }
-
-            if(toId == null) {
-                toId = this.size;
-                this.mapping.put(to, toId);
-                ++this.size;
-                this.adjacencyList.add(new ArrayList<Integer>());
-            }
-
-            this.adjacencyList.get(fromId).add(toId);
-            this.adjacencyList.get(toId).add(fromId);
+        public int getCounter() {
+            return this.mapping.counter;
         }
 
         public Iterable<Integer> adjacencyList(int id) {
-            ArrayList<Integer> adjList = this.adjacencyList.get(id);
+            ArrayList<Integer> adjList = adjacencyList.get(id);
             if (adjList == null) {
                 return Collections.emptyList();
             }
@@ -202,7 +185,7 @@ public class HW07_4111056036_4 extends LSD {
             graph.addEdge(array[i][0], array[i][1]);
         }
 
-        n = graph.size;        
+        n = graph.getCounter();        
         marked = new boolean[n];
         edgeTo = new int[n];
         distTo = new int[n];

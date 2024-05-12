@@ -127,7 +127,7 @@ public class HW07_4111056036_2 extends LSD {
         public int size;
 
         public Graph() {
-            this.mapping = new HashTable(5000);
+            this.mapping = new HashTable(2500);
             this.adjacencyList = new ArrayList<>();
             this.size = 0;
         }

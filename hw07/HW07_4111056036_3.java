@@ -6,102 +6,48 @@ public class HW07_4111056036_3 extends LSD {
     private boolean[] marked;
     private int[] edgeTo;
     private int[] distTo;
-
-    private class HashMap<K, V> {
-        private static final int DEFAULT_CAPACITY = 16;
-        private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-        private Node<K, V>[] table;
+    
+    private class HashTable {
         private int size;
+        private Node[] nodes;
     
-        @SuppressWarnings("unchecked")
-        public HashMap() {
-            this.table = new Node[DEFAULT_CAPACITY];
+        public HashTable(int size) {
+            this.nodes = new Node[this.size = size];
         }
     
-        @SuppressWarnings("unchecked")
-        private void grew() {
-            if ((size + 1) == (table.length * DEFAULT_LOAD_FACTOR)) {
-                Node<K, V>[] oldTable = table;
-                table = new Node[table.length << 1];
-                size = 0;
-                for (int i = 0; i < oldTable.length; ++i) {
-                    Node<K, V> node = oldTable[i];
-                    while (node != null) {
-                        put(node.key, node.value);
-                        node = node.next;
-                    }
-                }
-            }
-        }
-    
-        public void put(K key, V value) {
-            grew();
-    
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node<K, V> node = table[index];
-            Node<K, V> newNode = new Node<>(key, value, null);
-            if (node == null) {
-                table[index] = newNode;
-            } else {
-                boolean keyRepeat = false;
-                Node<K, V> last = null;
-                while (node != null) {
-                    if (node.key.equals(key)) {
-                        keyRepeat = true;
-                        node.value = value;
-                        break;
-                    } else {
-                        last = node;
-                        node = node.next;
-                    }
-                }
-                if (!keyRepeat) {
-                    last.next = newNode;
-                }
+        public int hash(int key) {
+            int hashKey = ((key % size) + size) % size;
+            while (nodes[hashKey] != null && nodes[hashKey].id != key) {
+                hashKey = (hashKey + 1) % size;
             }
     
-            ++size;
+            return hashKey;
         }
     
-        public V get(K key) {
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node<K, V> node = table[index];
-            while (node != null) {
-                if (node.key.equals(key)) {
-                    return node.value;
-                } else {
-                    node = node.next;
-                }
+        public void put(int id, int value) {
+            int key = hash(id);
+            Node head = nodes[key];
+            if(head != null) {
+                return;
             }
-            return null;
+            nodes[key] = new Node(id, value);
         }
-    
-        private int hash(Object key) {
-            if (key == null) {
-                return 0;
+
+        public Integer get(int id) {
+            int key = hash(id);
+            Node head = nodes[key];
+            if(head == null) {
+                return null;
             }
-    
-            int h = key.hashCode();
-            h = h ^ (h >>> 16);
-    
-            return h;
+            return head.value;
         }
-    
-        private int calcIndex(int hash) {
-            return  (table.length - 1) & hash;
-        }
-    
-        private class Node<E, A> {
-            E key;
-            A value;
-            Node<E, A> next;
-    
-            public Node(E key, A value, Node<E, A> next) {
-                this.key = key;
+
+        private class Node {
+            int id, value;
+        
+            public Node(int id, int value) {
+                this.id = id;
                 this.value = value;
-                this.next = next;
             }
         }
     }
@@ -176,12 +122,12 @@ public class HW07_4111056036_3 extends LSD {
     }
 
     private class Graph {
-        private HashMap<Integer, Integer> mapping;
+        private HashTable mapping;
         private ArrayList<ArrayList<Integer>> adjacencyList;
         public int size;
 
         public Graph() {
-            this.mapping = new HashMap<Integer, Integer>();
+            this.mapping = new HashTable(5000);
             this.adjacencyList = new ArrayList<>();
             this.size = 0;
         }
@@ -264,6 +210,8 @@ public class HW07_4111056036_3 extends LSD {
         int farthestNode = bfs(graph, 0);
 
         java.util.Arrays.fill(marked, false);
+        java.util.Arrays.fill(edgeTo, 0);
+        java.util.Arrays.fill(distTo, 0);
 
         bfs(graph, farthestNode);
 
