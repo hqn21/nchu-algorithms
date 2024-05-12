@@ -39,7 +39,7 @@ public class HW07_4111056036_2 extends LSD {
             if(head == null) {
                 return null;
             }
-            return nodes[key].value;
+            return head.value;
         }
 
         private class Node {
