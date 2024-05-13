@@ -11,18 +11,17 @@ public class HW07_4111056036_4 extends LSD {
     
     private class HashTable {
         public int counter;
-        private int size;
         private Node[] nodes;
     
         public HashTable(int size) {
-            this.nodes = new Node[this.size = size];
+            this.nodes = new Node[size];
             this.counter = 0;
         }
     
         public int hash(int key) {
-            int hashKey = ((key % size) + size) % size;
+            int hashKey = key & 8191;
             while (nodes[hashKey] != null && nodes[hashKey].id != key) {
-                hashKey = (hashKey + 1) % size;
+                hashKey = (hashKey + 1) & 8191;
             }
     
             return hashKey;
@@ -103,7 +102,7 @@ public class HW07_4111056036_4 extends LSD {
 
     private class Graph {
         public Graph() {
-            mapping = new HashTable(20000);
+            mapping = new HashTable(8192);
             adjacencyList = new ArrayList<>();
         }
 
