@@ -4,7 +4,6 @@ import java.util.Collections;
 public class HW07_4111056036_5 extends LSD {
     private int maxDist;
     private boolean[] marked;
-    private int[] edgeTo;
     private int[] distTo;
 
     private class HashMap<K, V> {
@@ -234,7 +233,6 @@ public class HW07_4111056036_5 extends LSD {
                 if(marked[w] == false) {
                     queue.enqueue(w);
                     marked[w] = true;
-                    edgeTo[w] = v;
                     distTo[w] = distToV;
                     if(distTo[w] > maxDist) {
                         maxDist = distTo[w];
@@ -258,13 +256,11 @@ public class HW07_4111056036_5 extends LSD {
 
         n = graph.size;        
         marked = new boolean[n];
-        edgeTo = new int[n];
         distTo = new int[n];
 
         for(int i = 0; i < n; ++i) {
             bfs(graph, i);
             marked = new boolean[n];
-            edgeTo = new int[n];
             distTo = new int[n];
         }
 
