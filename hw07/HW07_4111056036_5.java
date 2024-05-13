@@ -4,211 +4,124 @@ public class HW07_4111056036_5 extends LSD {
     private int maxDist;
     private boolean[] marked;
     private int[] distTo;
+    private ArrayList<ArrayList<Integer>> adjacencyList;
+    private HashTable mapping;
+    
+    private class HashTable {
+        public int counter;
+        private Node[] nodes;
+    
+        public HashTable() {
+            this.nodes = new Node[8192];
+            this.counter = 0;
+        }
+    
+        public int hash(int key) {
+            int hashKey = key & 8191;
+            while (nodes[hashKey] != null && nodes[hashKey].id != key) {
+                hashKey = (hashKey + 1) & 8191;
+            }
+    
+            return hashKey;
+        }
 
-    private class HashMap<K, V> {
-        private static final int DEFAULT_CAPACITY = 16;
-        private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-        private Node<K, V>[] table;
-        private int size;
-    
-        @SuppressWarnings("unchecked")
-        public HashMap() {
-            this.table = new Node[DEFAULT_CAPACITY];
-        }
-    
-        @SuppressWarnings("unchecked")
-        private void grew() {
-            if ((size + 1) == (table.length * DEFAULT_LOAD_FACTOR)) {
-                Node<K, V>[] oldTable = table;
-                table = new Node[table.length << 1];
-                size = 0;
-                for (int i = 0; i < oldTable.length; ++i) {
-                    Node<K, V> node = oldTable[i];
-                    while (node != null) {
-                        put(node.key, node.value);
-                        node = node.next;
-                    }
-                }
+        public int get(int id) {
+            int key = hash(id);
+            Node head = nodes[key];
+            if(head == null) {
+                nodes[key] = new Node(id, this.counter);
+                ++this.counter;
+                adjacencyList.add(new ArrayList<Integer>());
+                return this.counter - 1;
             }
+            return head.value;
         }
-    
-        public void put(K key, V value) {
-            grew();
-    
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node<K, V> node = table[index];
-            Node<K, V> newNode = new Node<>(key, value, null);
-            if (node == null) {
-                table[index] = newNode;
-            } else {
-                boolean keyRepeat = false;
-                Node<K, V> last = null;
-                while (node != null) {
-                    if (node.key.equals(key)) {
-                        keyRepeat = true;
-                        node.value = value;
-                        break;
-                    } else {
-                        last = node;
-                        node = node.next;
-                    }
-                }
-                if (!keyRepeat) {
-                    last.next = newNode;
-                }
-            }
-    
-            ++size;
-        }
-    
-        public V get(K key) {
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node<K, V> node = table[index];
-            while (node != null) {
-                if (node.key.equals(key)) {
-                    return node.value;
-                } else {
-                    node = node.next;
-                }
-            }
-            return null;
-        }
-    
-        private int hash(Object key) {
-            if (key == null) {
-                return 0;
-            }
-    
-            int h = key.hashCode();
-            h = h ^ (h >>> 16);
-    
-            return h;
-        }
-    
-        private int calcIndex(int hash) {
-            return  (table.length - 1) & hash;
-        }
-    
-        private class Node<E, A> {
-            E key;
-            A value;
-            Node<E, A> next;
-    
-            public Node(E key, A value, Node<E, A> next) {
-                this.key = key;
+
+        private class Node {
+            int id, value;
+        
+            public Node(int id, int value) {
+                this.id = id;
                 this.value = value;
-                this.next = next;
             }
         }
     }
 
-    private class LinkedList<T> {
-        private Node<T> head;
-        private Node<T> tail;
+    private class Queue {
+        private int[] queue;
+        private int head;
+        private int tail;
         private int size;
     
-        private class Node<K> {
-            private K data;
-            private Node<K> next;
-    
-            public Node(K data, Node<K> next) {
-                this.data = data;
-                this.next = next;
-            }
-        }
-    
-        public LinkedList() {
-            head = null;
-            tail = null;
+        public Queue() {
+            queue = new int[2];
+            head = 0;
+            tail = 0;
             size = 0;
         }
     
-        public void addLast(T item) {
-            Node<T> newNode = new Node<T>(item, null);
-            if (tail == null) {
-                head = newNode;
-            } else {
-                tail.next = newNode;
+        public void enqueue(int item) {
+            if (size == queue.length) {
+                resize(2 * queue.length);
             }
-            tail = newNode;
+            queue[tail++] = item;
+            if (tail == queue.length) {
+                tail = 0;
+            }
             size++;
         }
     
-        public T removeFirst() {
-            if (head == null) {
+        public Integer dequeue() {
+            if (isEmpty()) {
                 return null;
             }
-            T item = head.data;
-            head = head.next;
-            if (head == null) {
-                tail = null;
+            int item = queue[head];
+            queue[head] = 0;
+            head++;
+            if (head == queue.length) {
+                head = 0;
             }
             size--;
+            if (size > 0 && size == queue.length / 4) {
+                resize(queue.length / 2);
+            }
             return item;
         }
     
         public boolean isEmpty() {
             return size == 0;
         }
-    }
-
-   private class Queue<T> {
-        private LinkedList<T> list = new LinkedList<T>();
     
-        public void enqueue(T item) {
-            list.addLast(item);
-        }
-    
-        public T dequeue() {
-            if (list.isEmpty()) {
-                return null;
+        private void resize(int capacity) {
+            int[] copy = new int[capacity];
+            if (head < tail) {
+                System.arraycopy(queue, head, copy, 0, size);
+            } else {
+                System.arraycopy(queue, head, copy, 0, queue.length - head);
+                System.arraycopy(queue, 0, copy, queue.length - head, tail);
             }
-            return list.removeFirst();
-        }
-    
-        public boolean isEmpty() {
-            return list.isEmpty();
+            queue = copy;
+            head = 0;
+            tail = size;
         }
     }
 
     private class Graph {
-        private HashMap<Integer, Integer> mapping;
-        private ArrayList<ArrayList<Integer>> adjacencyList;
-        public int size;
-
         public Graph() {
-            this.mapping = new HashMap<Integer, Integer>();
-            this.adjacencyList = new ArrayList<>();
-            this.size = 0;
+            mapping = new HashTable();
+            adjacencyList = new ArrayList<>();
         }
 
         public void addEdge(int from, int to) {
-            Integer fromId = mapping.get(from);
-            Integer toId = mapping.get(to);
-
-            if(fromId == null) {
-                fromId = size;
-                this.mapping.put(from, fromId);
-                this.adjacencyList.add(new ArrayList<Integer>());
-                ++size;
-            }
-
-            if(toId == null) {
-                toId = this.size;
-                this.mapping.put(to, toId);
-                ++this.size;
-                this.adjacencyList.add(new ArrayList<Integer>());
-            }
-
-            this.adjacencyList.get(fromId).add(toId);
-            this.adjacencyList.get(toId).add(fromId);
+            int fromId = mapping.get(from);
+            int toId = mapping.get(to);
+            adjacencyList.get(fromId).add(toId);
+            adjacencyList.get(toId).add(fromId);
         }
     }
 
     private int bfs(Graph graph, int s) {
-        Queue<Integer> queue = new Queue<>();
+        Queue queue = new Queue();
         queue.enqueue(s);
         marked[s] = true;
         distTo[s] = 0;
@@ -220,7 +133,8 @@ public class HW07_4111056036_5 extends LSD {
             v = queue.dequeue();
             lastNode = v;
             distToV = distTo[v] + 1;
-            for(int w : graph.adjacencyList.get(v)) {
+            
+            for(int w : adjacencyList.get(v)) {
                 if(marked[w] == false) {
                     queue.enqueue(w);
                     marked[w] = true;
@@ -245,7 +159,7 @@ public class HW07_4111056036_5 extends LSD {
             graph.addEdge(array[i][0], array[i][1]);
         }
 
-        n = graph.size;        
+        n = mapping.counter;        
         marked = new boolean[n];
         distTo = new int[n];
 
