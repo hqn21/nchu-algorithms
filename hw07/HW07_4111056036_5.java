@@ -263,9 +263,9 @@ public class HW07_4111056036_5 extends LSD {
 
         for(int i = 0; i < n; ++i) {
             bfs(graph, i);
-            java.util.Arrays.fill(marked, false);
-			java.util.Arrays.fill(edgeTo, 0);
-			java.util.Arrays.fill(distTo, 0);
+            marked = new boolean[n];
+            edgeTo = new int[n];
+            distTo = new int[n];
         }
 
         return maxDist;

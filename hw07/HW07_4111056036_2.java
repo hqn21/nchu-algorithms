@@ -229,7 +229,7 @@ public class HW07_4111056036_2 extends LSD {
 
         int farthestNode = bfs(graph, 0);
 
-        java.util.Arrays.fill(marked, false);
+        marked = new boolean[n];
 
         bfs(graph, farthestNode);
 
