@@ -156,7 +156,7 @@ public class HW07_4111056036_3 extends LSD {
         }
     }
 
-   private class Queue<T> {
+    private class Queue<T> {
         private LinkedList<T> list = new LinkedList<T>();
     
         public void enqueue(T item) {

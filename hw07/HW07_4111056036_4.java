@@ -7,6 +7,7 @@ public class HW07_4111056036_4 extends LSD {
     private int[] edgeTo;
     private int[] distTo;
     private ArrayList<ArrayList<Integer>> adjacencyList;
+    private HashTable mapping;
     
     private class HashTable {
         public int counter;
@@ -49,48 +50,49 @@ public class HW07_4111056036_4 extends LSD {
         }
     }
 
-    private class LinkedList<T> {
-        private Node<T> head;
-        private Node<T> tail;
+    private class Queue {
+        private Node head;
+        private Node tail;
         private int size;
+
+        private class Node {
+            private int data;
+            private Node next;
     
-        private class Node<K> {
-            private K data;
-            private Node<K> next;
-    
-            public Node(K data, Node<K> next) {
+            public Node(int data, Node next) {
                 this.data = data;
                 this.next = next;
             }
         }
-    
-        public LinkedList() {
+
+        public Queue() {
             head = null;
             tail = null;
             size = 0;
         }
-    
-        public void addLast(T item) {
-            Node<T> newNode = new Node<T>(item, null);
+
+        public void enqueue(int item) {
+            Node newNode = new Node(item, null);
             if (tail == null) {
                 head = newNode;
             } else {
                 tail.next = newNode;
             }
             tail = newNode;
-            size++;
+            ++size;
         }
     
-        public T removeFirst() {
-            if (head == null) {
+        public Integer dequeue() {
+            if(size == 0) {
                 return null;
             }
-            T item = head.data;
+
+            int item = head.data;
             head = head.next;
             if (head == null) {
                 tail = null;
             }
-            size--;
+            --size;
             return item;
         }
     
@@ -99,30 +101,9 @@ public class HW07_4111056036_4 extends LSD {
         }
     }
 
-   private class Queue<T> {
-        private LinkedList<T> list = new LinkedList<T>();
-    
-        public void enqueue(T item) {
-            list.addLast(item);
-        }
-    
-        public T dequeue() {
-            if (list.isEmpty()) {
-                return null;
-            }
-            return list.removeFirst();
-        }
-    
-        public boolean isEmpty() {
-            return list.isEmpty();
-        }
-    }
-
     private class Graph {
-        private HashTable mapping;
-
         public Graph() {
-            this.mapping = new HashTable(5000);
+            mapping = new HashTable(20000);
             adjacencyList = new ArrayList<>();
         }
 
@@ -131,10 +112,6 @@ public class HW07_4111056036_4 extends LSD {
             int toId = mapping.get(to);
             adjacencyList.get(fromId).add(toId);
             adjacencyList.get(toId).add(fromId);
-        }
-
-        public int getCounter() {
-            return this.mapping.counter;
         }
 
         public Iterable<Integer> adjacencyList(int id) {
@@ -147,7 +124,7 @@ public class HW07_4111056036_4 extends LSD {
     }
 
     private int bfs(Graph graph, int s) {
-        Queue<Integer> queue = new Queue<>();
+        Queue queue = new Queue();
         queue.enqueue(s);
         marked[s] = true;
         distTo[s] = 0;
@@ -185,7 +162,7 @@ public class HW07_4111056036_4 extends LSD {
             graph.addEdge(array[i][0], array[i][1]);
         }
 
-        n = graph.getCounter();        
+        n = mapping.counter;        
         marked = new boolean[n];
         edgeTo = new int[n];
         distTo = new int[n];
