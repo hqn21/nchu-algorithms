@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class HW07_4111056036_4 extends LSD {
     private int maxDist;
@@ -111,14 +110,6 @@ public class HW07_4111056036_4 extends LSD {
             adjacencyList.get(fromId).add(toId);
             adjacencyList.get(toId).add(fromId);
         }
-
-        public Iterable<Integer> adjacencyList(int id) {
-            ArrayList<Integer> adjList = adjacencyList.get(id);
-            if (adjList == null) {
-                return Collections.emptyList();
-            }
-            return adjList;
-        }
     }
 
     private int bfs(Graph graph, int s) {
@@ -134,7 +125,7 @@ public class HW07_4111056036_4 extends LSD {
             v = queue.dequeue();
             lastNode = v;
             distToV = distTo[v] + 1;
-            for(int w : graph.adjacencyList(v)) {
+            for(int w : adjacencyList.get(v)) {
                 if(marked[w] == false) {
                     queue.enqueue(w);
                     marked[w] = true;

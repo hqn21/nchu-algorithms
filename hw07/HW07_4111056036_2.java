@@ -1,168 +1,114 @@
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class HW07_4111056036_2 extends LSD {
     private int maxDist;
     private boolean[] marked;
     private int[] distTo;
-    private HashMap mapping;
     private ArrayList<ArrayList<Integer>> adjacencyList;
+    private HashTable mapping;
+    
+    private class HashTable {
+        public int counter;
+        private Node[] nodes;
+    
+        public HashTable() {
+            this.nodes = new Node[8192];
+            this.counter = 0;
+        }
+    
+        public int hash(int key) {
+            int hashKey = key & 8191;
+            while (nodes[hashKey] != null && nodes[hashKey].id != key) {
+                hashKey = (hashKey + 1) & 8191;
+            }
+    
+            return hashKey;
+        }
 
-    private class HashMap {
-        private static final int DEFAULT_CAPACITY = 16;
-        private static final float DEFAULT_LOAD_FACTOR = 0.75f;
-        private Node[] table;
-        private int size;
-        public int counter = 0;
-    
-        public HashMap() {
-            this.table = new Node[DEFAULT_CAPACITY];
-        }
-    
-        private void grew() {
-            if ((size + 1) == (table.length * DEFAULT_LOAD_FACTOR)) {
-                Node[] oldTable = table;
-                table = new Node[table.length << 1];
-                size = 0;
-                for (int i = 0; i < oldTable.length; ++i) {
-                    Node node = oldTable[i];
-                    while (node != null) {
-                        put(node.key, node.value);
-                        node = node.next;
-                    }
-                }
+        public int get(int id) {
+            int key = hash(id);
+            Node head = nodes[key];
+            if(head == null) {
+                nodes[key] = new Node(id, this.counter);
+                ++this.counter;
+                adjacencyList.add(new ArrayList<Integer>());
+                return this.counter - 1;
             }
+            return head.value;
         }
-    
-        private void put(int key, int value) {
-            grew();
-    
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node node = table[index];
-            Node newNode = new Node(key, value, null);
-            if (node == null) {
-                table[index] = newNode;
-            } else {
-                boolean keyRepeat = false;
-                Node last = null;
-                while (node != null) {
-                    if (node.key == key) {
-                        keyRepeat = true;
-                        node.value = value;
-                        break;
-                    } else {
-                        last = node;
-                        node = node.next;
-                    }
-                }
-                if (!keyRepeat) {
-                    last.next = newNode;
-                }
-            }
-    
-            ++size;
-        }
-    
-        public int get(int key) {
-            int hash = hash(key);
-            int index = calcIndex(hash);
-            Node node = table[index];
-            while (node != null) {
-                if (node.key == key) {
-                    return node.value;
-                } else {
-                    node = node.next;
-                }
-            }
-            put(key, counter);
-            adjacencyList.add(new ArrayList<Integer>());
-            ++counter;
-            return counter - 1;
-        }
-    
-        private int hash(Object key) {
-            if (key == null) {
-                return 0;
-            }
-    
-            int h = key.hashCode();
-            h = h ^ (h >>> 16);
-    
-            return h;
-        }
-    
-        private int calcIndex(int hash) {
-            return  (table.length - 1) & hash;
-        }
-    
+
         private class Node {
-            int key;
-            int value;
-            Node next;
-    
-            public Node(int key, int value, Node next) {
-                this.key = key;
+            int id, value;
+        
+            public Node(int id, int value) {
+                this.id = id;
                 this.value = value;
-                this.next = next;
             }
         }
     }
 
     private class Queue {
-        private Node head;
-        private Node tail;
+        private int[] queue;
+        private int head;
+        private int tail;
         private int size;
-
-        private class Node {
-            private int data;
-            private Node next;
     
-            public Node(int data, Node next) {
-                this.data = data;
-                this.next = next;
-            }
-        }
-
         public Queue() {
-            head = null;
-            tail = null;
+            queue = new int[2];
+            head = 0;
+            tail = 0;
             size = 0;
         }
-
+    
         public void enqueue(int item) {
-            Node newNode = new Node(item, null);
-            if (tail == null) {
-                head = newNode;
-            } else {
-                tail.next = newNode;
+            if (size == queue.length) {
+                resize(2 * queue.length);
             }
-            tail = newNode;
-            ++size;
+            queue[tail++] = item;
+            if (tail == queue.length) {
+                tail = 0;
+            }
+            size++;
         }
     
         public Integer dequeue() {
-            if(size == 0) {
+            if (isEmpty()) {
                 return null;
             }
-
-            int item = head.data;
-            head = head.next;
-            if (head == null) {
-                tail = null;
+            int item = queue[head];
+            queue[head] = 0;
+            head++;
+            if (head == queue.length) {
+                head = 0;
             }
-            --size;
+            size--;
+            if (size > 0 && size == queue.length / 4) {
+                resize(queue.length / 2);
+            }
             return item;
         }
     
         public boolean isEmpty() {
             return size == 0;
         }
+    
+        private void resize(int capacity) {
+            int[] copy = new int[capacity];
+            if (head < tail) {
+                System.arraycopy(queue, head, copy, 0, size);
+            } else {
+                System.arraycopy(queue, head, copy, 0, queue.length - head);
+                System.arraycopy(queue, 0, copy, queue.length - head, tail);
+            }
+            queue = copy;
+            head = 0;
+            tail = size;
+        }
     }
 
     private class Graph {
         public Graph() {
-            mapping = new HashMap();
+            mapping = new HashTable();
             adjacencyList = new ArrayList<>();
         }
 
@@ -171,14 +117,6 @@ public class HW07_4111056036_2 extends LSD {
             int toId = mapping.get(to);
             adjacencyList.get(fromId).add(toId);
             adjacencyList.get(toId).add(fromId);
-        }
-
-        public Iterable<Integer> adjacencyList(int id) {
-            ArrayList<Integer> adjList = adjacencyList.get(id);
-            if (adjList == null) {
-                return Collections.emptyList();
-            }
-            return adjList;
         }
     }
 
@@ -195,7 +133,8 @@ public class HW07_4111056036_2 extends LSD {
             v = queue.dequeue();
             lastNode = v;
             distToV = distTo[v] + 1;
-            for(int w : graph.adjacencyList(v)) {
+            
+            for(int w : adjacencyList.get(v)) {
                 if(marked[w] == false) {
                     queue.enqueue(w);
                     marked[w] = true;
@@ -227,6 +166,7 @@ public class HW07_4111056036_2 extends LSD {
         int farthestNode = bfs(graph, 0);
 
         marked = new boolean[n];
+        distTo = new int[n];
 
         bfs(graph, farthestNode);
 
