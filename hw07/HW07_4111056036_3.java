@@ -6,48 +6,102 @@ public class HW07_4111056036_3 extends LSD {
     private boolean[] marked;
     private int[] edgeTo;
     private int[] distTo;
-    
-    private class HashTable {
+
+    private class HashMap<K, V> {
+        private static final int DEFAULT_CAPACITY = 16;
+        private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+        private Node<K, V>[] table;
         private int size;
-        private Node[] nodes;
     
-        public HashTable(int size) {
-            this.nodes = new Node[this.size = size];
+        @SuppressWarnings("unchecked")
+        public HashMap() {
+            this.table = new Node[DEFAULT_CAPACITY];
         }
     
-        public int hash(int key) {
-            int hashKey = ((key % size) + size) % size;
-            while (nodes[hashKey] != null && nodes[hashKey].id != key) {
-                hashKey = (hashKey + 1) % size;
+        @SuppressWarnings("unchecked")
+        private void grew() {
+            if ((size + 1) == (table.length * DEFAULT_LOAD_FACTOR)) {
+                Node<K, V>[] oldTable = table;
+                table = new Node[table.length << 1];
+                size = 0;
+                for (int i = 0; i < oldTable.length; ++i) {
+                    Node<K, V> node = oldTable[i];
+                    while (node != null) {
+                        put(node.key, node.value);
+                        node = node.next;
+                    }
+                }
+            }
+        }
+    
+        public void put(K key, V value) {
+            grew();
+    
+            int hash = hash(key);
+            int index = calcIndex(hash);
+            Node<K, V> node = table[index];
+            Node<K, V> newNode = new Node<>(key, value, null);
+            if (node == null) {
+                table[index] = newNode;
+            } else {
+                boolean keyRepeat = false;
+                Node<K, V> last = null;
+                while (node != null) {
+                    if (node.key.equals(key)) {
+                        keyRepeat = true;
+                        node.value = value;
+                        break;
+                    } else {
+                        last = node;
+                        node = node.next;
+                    }
+                }
+                if (!keyRepeat) {
+                    last.next = newNode;
+                }
             }
     
-            return hashKey;
+            ++size;
         }
     
-        public void put(int id, int value) {
-            int key = hash(id);
-            Node head = nodes[key];
-            if(head != null) {
-                return;
+        public V get(K key) {
+            int hash = hash(key);
+            int index = calcIndex(hash);
+            Node<K, V> node = table[index];
+            while (node != null) {
+                if (node.key.equals(key)) {
+                    return node.value;
+                } else {
+                    node = node.next;
+                }
             }
-            nodes[key] = new Node(id, value);
+            return null;
         }
-
-        public Integer get(int id) {
-            int key = hash(id);
-            Node head = nodes[key];
-            if(head == null) {
-                return null;
+    
+        private int hash(Object key) {
+            if (key == null) {
+                return 0;
             }
-            return head.value;
+    
+            int h = key.hashCode();
+            h = h ^ (h >>> 16);
+    
+            return h;
         }
-
-        private class Node {
-            int id, value;
-        
-            public Node(int id, int value) {
-                this.id = id;
+    
+        private int calcIndex(int hash) {
+            return  (table.length - 1) & hash;
+        }
+    
+        private class Node<E, A> {
+            E key;
+            A value;
+            Node<E, A> next;
+    
+            public Node(E key, A value, Node<E, A> next) {
+                this.key = key;
                 this.value = value;
+                this.next = next;
             }
         }
     }
@@ -122,12 +176,12 @@ public class HW07_4111056036_3 extends LSD {
     }
 
     private class Graph {
-        private HashTable mapping;
+        private HashMap<Integer, Integer> mapping;
         private ArrayList<ArrayList<Integer>> adjacencyList;
         public int size;
 
         public Graph() {
-            this.mapping = new HashTable(5000);
+            this.mapping = new HashMap<Integer, Integer>();
             this.adjacencyList = new ArrayList<>();
             this.size = 0;
         }
