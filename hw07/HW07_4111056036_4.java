@@ -188,12 +188,11 @@ public class HW07_4111056036_4 extends LSD {
         marked = new boolean[n];
         distTo = new int[n];
 
-        int farthestNode = bfs(graph, 0);
-
-        marked = new boolean[n];
-        distTo = new int[n];
-
-        bfs(graph, farthestNode);
+        for(int i = 0; i < n; ++i) {
+            bfs(graph, i);
+            marked = new boolean[n];
+            distTo = new int[n];
+        }
 
         return maxDist;
     }

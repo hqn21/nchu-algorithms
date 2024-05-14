@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-
 public class HW07_4111056036_5 extends LSD {
     private int maxDist;
     private boolean[] marked;
     private int[] distTo;
-    private ArrayList<Integer>[] adjacencyList;
+    private LinkedList[] adjacencyList;
     private HashTable mapping;
     
     private class HashTable {
@@ -30,7 +28,7 @@ public class HW07_4111056036_5 extends LSD {
             Node head = nodes[key];
             if(head == null) {
                 nodes[key] = new Node(id, this.counter);
-                adjacencyList[this.counter] = new ArrayList<Integer>();
+                adjacencyList[this.counter] = new LinkedList();
                 ++this.counter;
                 return this.counter - 1;
             }
@@ -44,6 +42,31 @@ public class HW07_4111056036_5 extends LSD {
                 this.id = id;
                 this.value = value;
             }
+        }
+    }
+
+    private class Node {
+        int value;
+        Node next;
+
+        public Node(int value) {
+            this.value = value;
+            this.next = null;
+        }
+    }
+
+    private class LinkedList {
+        Node head;
+        Node last;
+
+        public LinkedList() {
+            head = new Node(0);
+            last = head;
+        }
+
+        public void add(int value) {
+            last.next = new Node(value);
+            last = last.next;
         }
     }
 
@@ -106,11 +129,10 @@ public class HW07_4111056036_5 extends LSD {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private class Graph {
         public Graph() {
             mapping = new HashTable();
-            adjacencyList = new ArrayList[8192];
+            adjacencyList = new LinkedList[2500];
         }
 
         public void addEdge(int from, int to) {
@@ -130,20 +152,22 @@ public class HW07_4111056036_5 extends LSD {
         int v;
         int lastNode = s;
         int distToV;
+        Node head;
         while(!queue.isEmpty()) {
             v = queue.dequeue();
             lastNode = v;
             distToV = distTo[v] + 1;
-            
-            for(int w : adjacencyList[v]) {
-                if(marked[w] == false) {
-                    queue.enqueue(w);
-                    marked[w] = true;
-                    distTo[w] = distToV;
-                    if(distTo[w] > maxDist) {
-                        maxDist = distTo[w];
+            head = adjacencyList[v].head.next;
+            while(head != null) {
+                if(marked[head.value] == false) {
+                    queue.enqueue(head.value);
+                    marked[head.value] = true;
+                    distTo[head.value] = distToV;
+                    if(distTo[head.value] > maxDist) {
+                        maxDist = distTo[head.value];
                     }
                 }
+                head = head.next;
             }
         }
 
@@ -167,7 +191,6 @@ public class HW07_4111056036_5 extends LSD {
         for(int i = 0; i < n; ++i) {
             bfs(graph, i);
             marked = new boolean[n];
-            distTo = new int[n];
         }
 
         return maxDist;
