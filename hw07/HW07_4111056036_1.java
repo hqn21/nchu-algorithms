@@ -4,7 +4,7 @@ public class HW07_4111056036_1 extends LSD {
     private int maxDist;
     private boolean[] marked;
     private int[] distTo;
-    private ArrayList<ArrayList<Integer>> adjacencyList;
+    private ArrayList<Integer>[] adjacencyList;
     private HashTable mapping;
     
     private class HashTable {
@@ -30,8 +30,8 @@ public class HW07_4111056036_1 extends LSD {
             Node head = nodes[key];
             if(head == null) {
                 nodes[key] = new Node(id, this.counter);
+                adjacencyList[this.counter] = new ArrayList<Integer>();
                 ++this.counter;
-                adjacencyList.add(new ArrayList<Integer>());
                 return this.counter - 1;
             }
             return head.value;
@@ -106,17 +106,18 @@ public class HW07_4111056036_1 extends LSD {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private class Graph {
         public Graph() {
             mapping = new HashTable();
-            adjacencyList = new ArrayList<>();
+            adjacencyList = new ArrayList[2500];
         }
 
         public void addEdge(int from, int to) {
             int fromId = mapping.get(from);
             int toId = mapping.get(to);
-            adjacencyList.get(fromId).add(toId);
-            adjacencyList.get(toId).add(fromId);
+            adjacencyList[fromId].add(toId);
+            adjacencyList[toId].add(fromId);
         }
     }
 
@@ -134,7 +135,7 @@ public class HW07_4111056036_1 extends LSD {
             lastNode = v;
             distToV = distTo[v] + 1;
             
-            for(int w : adjacencyList.get(v)) {
+            for(int w : adjacencyList[v]) {
                 if(marked[w] == false) {
                     queue.enqueue(w);
                     marked[w] = true;
