@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-
 public class HW07_4111056036_4 extends LSD {
     private int maxDist;
     private boolean[] marked;
     private int[] distTo;
-    private ArrayList<ArrayList<Integer>> adjacencyList;
+    private LinkedList[] adjacencyList;
     private HashTable mapping;
     
     private class HashTable {
@@ -30,8 +28,8 @@ public class HW07_4111056036_4 extends LSD {
             Node head = nodes[key];
             if(head == null) {
                 nodes[key] = new Node(id, this.counter);
+                adjacencyList[this.counter] = new LinkedList();
                 ++this.counter;
-                adjacencyList.add(new ArrayList<Integer>());
                 return this.counter - 1;
             }
             return head.value;
@@ -47,68 +45,101 @@ public class HW07_4111056036_4 extends LSD {
         }
     }
 
-    private class Queue {
-        private Node head;
-        private Node tail;
-        private int size;
+    private class Node {
+        int value;
+        Node next;
 
-        private class Node {
-            private int data;
-            private Node next;
-    
-            public Node(int data, Node next) {
-                this.data = data;
-                this.next = next;
-            }
+        public Node(int value) {
+            this.value = value;
+            this.next = null;
+        }
+    }
+
+    private class LinkedList {
+        Node head;
+        Node last;
+
+        public LinkedList() {
+            head = new Node(0);
+            last = head;
         }
 
+        public void add(int value) {
+            last.next = new Node(value);
+            last = last.next;
+        }
+    }
+
+    private class Queue {
+        private int[] queue;
+        private int head;
+        private int tail;
+        private int size;
+    
         public Queue() {
-            head = null;
-            tail = null;
+            queue = new int[2];
+            head = 0;
+            tail = 0;
             size = 0;
         }
-
+    
         public void enqueue(int item) {
-            Node newNode = new Node(item, null);
-            if (tail == null) {
-                head = newNode;
-            } else {
-                tail.next = newNode;
+            if (size == queue.length) {
+                resize(2 * queue.length);
             }
-            tail = newNode;
-            ++size;
+            queue[tail++] = item;
+            if (tail == queue.length) {
+                tail = 0;
+            }
+            size++;
         }
     
         public Integer dequeue() {
-            if(size == 0) {
+            if (isEmpty()) {
                 return null;
             }
-
-            int item = head.data;
-            head = head.next;
-            if (head == null) {
-                tail = null;
+            int item = queue[head];
+            queue[head] = 0;
+            head++;
+            if (head == queue.length) {
+                head = 0;
             }
-            --size;
+            size--;
+            if (size > 0 && size == queue.length / 4) {
+                resize(queue.length / 2);
+            }
             return item;
         }
     
         public boolean isEmpty() {
             return size == 0;
         }
+    
+        private void resize(int capacity) {
+            int[] copy = new int[capacity];
+            if (head < tail) {
+                System.arraycopy(queue, head, copy, 0, size);
+            } else {
+                System.arraycopy(queue, head, copy, 0, queue.length - head);
+                System.arraycopy(queue, 0, copy, queue.length - head, tail);
+            }
+            queue = copy;
+            head = 0;
+            tail = size;
+        }
     }
 
     private class Graph {
         public Graph() {
             mapping = new HashTable();
-            adjacencyList = new ArrayList<>();
+            adjacencyList = new LinkedList[8192];
         }
 
         public void addEdge(int from, int to) {
             int fromId = mapping.get(from);
             int toId = mapping.get(to);
-            adjacencyList.get(fromId).add(toId);
-            adjacencyList.get(toId).add(fromId);
+            adjacencyList[fromId].add(toId);
+            adjacencyList[toId].add(fromId);
         }
     }
 
@@ -121,19 +152,22 @@ public class HW07_4111056036_4 extends LSD {
         int v;
         int lastNode = s;
         int distToV;
+        Node head;
         while(!queue.isEmpty()) {
             v = queue.dequeue();
             lastNode = v;
             distToV = distTo[v] + 1;
-            for(int w : adjacencyList.get(v)) {
-                if(marked[w] == false) {
-                    queue.enqueue(w);
-                    marked[w] = true;
-                    distTo[w] = distToV;
-                    if(distTo[w] > maxDist) {
-                        maxDist = distTo[w];
+            head = adjacencyList[v].head.next;
+            while(head != null) {
+                if(marked[head.value] == false) {
+                    queue.enqueue(head.value);
+                    marked[head.value] = true;
+                    distTo[head.value] = distToV;
+                    if(distTo[head.value] > maxDist) {
+                        maxDist = distTo[head.value];
                     }
                 }
+                head = head.next;
             }
         }
 
