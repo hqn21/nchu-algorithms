@@ -132,7 +132,7 @@ public class HW07_4111056036_4 extends LSD {
     private class Graph {
         public Graph() {
             mapping = new HashTable();
-            adjacencyList = new LinkedList[1900];
+            adjacencyList = new LinkedList[2100];
         }
 
         public void addEdge(int from, int to) {
