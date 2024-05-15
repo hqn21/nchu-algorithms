@@ -132,7 +132,7 @@ public class HW07_4111056036_4 extends LSD {
     private class Graph {
         public Graph() {
             mapping = new HashTable();
-            adjacencyList = new LinkedList[8192];
+            adjacencyList = new LinkedList[1900];
         }
 
         public void addEdge(int from, int to) {
@@ -188,11 +188,11 @@ public class HW07_4111056036_4 extends LSD {
         marked = new boolean[n];
         distTo = new int[n];
 
-        for(int i = 0; i < n; ++i) {
-            bfs(graph, i);
-            marked = new boolean[n];
-            distTo = new int[n];
-        }
+        int farthestNode = bfs(graph, 0);
+
+        marked = new boolean[n];
+
+        bfs(graph, farthestNode);
 
         return maxDist;
     }
