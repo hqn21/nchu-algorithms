@@ -2,6 +2,18 @@
 
 ## Description
 Complete the `ArrayData` abstract class.
+### File Structure
+```
+./
+├─ ArrayData.java                   # Abstract Class
+├─ HW01_4111056036_1.java           # Build 1
+├─ HW01_4111056036_2.java           # Build 2
+├─ HW01_4111056036_3.java           # Build 3
+├─ HW01_4111056036_4.java           # Build 4
+├─ HW01_4111056036_5.java           # Build 5
+├─ HW01_4111056036_6.java           # Additional Build for Testing
+└─ README.md
+```
 
 ## Score
 ### Best Version
