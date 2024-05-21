@@ -4,14 +4,14 @@
 Given an integer array with unique integers, calculate the number of combinations where four distinct elements sum to zero.
 ### Examples
 **Example 1:**
-> **Input:** A = [-1,1,2,-4,4,8,-3]
-> **Output:** 2
-> **Explanation:** [1,-1,4,-4], [-1,-4,8,-3]
+> **Input:** A = [-1,1,2,-4,4,8,-3]  
+> **Output:** 2  
+> **Explanation:** [1,-1,4,-4], [-1,-4,8,-3]  
 
 **Example 2:**
-> **Input:** A = [-1,1,2,-4,4,8,-3]
-> **Output:** 3
-> **Explanation:** [1,-1,4,-4], [-1,-4,8,-3], [1,1,2,-4]
+> **Input:** A = [-1,1,2,-4,4,8,-3]  
+> **Output:** 3  
+> **Explanation:** [1,-1,4,-4], [-1,-4,8,-3], [1,1,2,-4]  
 
 ### File Structure
 ```
