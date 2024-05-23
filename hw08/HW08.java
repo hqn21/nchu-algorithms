@@ -46,6 +46,7 @@ public class HW08 {
         int[][] a = {{1, 2}, {1, 3}, {1, 4}};
         int[][] b = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
         int[][] c = readTxtFileTo2DArray("HW8_test_data/hw8_public_data_1.txt");
+        int[][] d = readTxtFileTo2DArray("HW8_test_data/hw8_public_data_2.txt");
 
         boolean result;
         double time;
@@ -64,6 +65,11 @@ public class HW08 {
         System.out.println("Time: " + time + "ns");
         stopWatch = new StopWatch();
         result = l.checkLLK(c);
+        time = stopWatch.elapsedTime();
+        System.out.println("Result: " + result + "\t" + (result == true ? "[CORRECT]" : "[WRONG]"));
+        System.out.println("Time: " + time + "ns");
+        stopWatch = new StopWatch();
+        result = l.checkLLK(d);
         time = stopWatch.elapsedTime();
         System.out.println("Result: " + result + "\t" + (result == true ? "[CORRECT]" : "[WRONG]"));
         System.out.println("Time: " + time + "ns");
