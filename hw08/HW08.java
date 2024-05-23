@@ -71,7 +71,7 @@ public class HW08 {
         stopWatch = new StopWatch();
         result = l.checkLLK(d);
         time = stopWatch.elapsedTime();
-        System.out.println("Result: " + result + "\t" + (result == true ? "[CORRECT]" : "[WRONG]"));
+        System.out.println("Result: " + result + "\t" + (result == false ? "[CORRECT]" : "[WRONG]"));
         System.out.println("Time: " + time + "ns");
         System.out.println("====================");
     }
