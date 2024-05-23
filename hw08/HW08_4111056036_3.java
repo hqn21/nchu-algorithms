@@ -8,7 +8,7 @@ public class HW08_4111056036_3 extends LLK {
 
         double slope = 1.0 * (array[1][1] - array[0][1]) / (array[1][0] - array[0][0]);
 
-        for (int i = 2; i < array.length; i++) {
+        for (int i = 2; i < n; i++) {
             if((1.0 * (array[i][1] - array[0][1]) / (array[i][0] - array[0][0])) != slope) {
                 return false;
             }
