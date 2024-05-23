@@ -1,45 +1,39 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HW08 {
-    public static int[][] readTxtFileTo2DArray(String fileName) {
-        List<int[]> rows = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            StringBuilder content = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                content.append(line);
-            }
-
-            // 去除大括號和空格，並根據逗號拆分
-            String[] pairs = content.toString()
-                                    .replace("{", "")
-                                    .replace("}", "")
-                                    .split("\\),\\(");
-
-            for (String pair : pairs) {
-                String[] numbers = pair.split(",");
-                int[] row = new int[numbers.length];
-                for (int i = 0; i < numbers.length; i++) {
-                    row[i] = Integer.parseInt(numbers[i].trim());
-                }
-                rows.add(row);
+    public static int[][] readTxtFileTo2DArray(String filePath) {
+        StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String currentLine;
+            while ((currentLine = br.readLine()) != null) {
+                contentBuilder.append(currentLine);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // 將 ArrayList 轉換為二維陣列
-        int[][] array = new int[rows.size()][];
-        for (int i = 0; i < rows.size(); i++) {
-            array[i] = rows.get(i);
+        
+        String input = contentBuilder.toString();
+        
+        // Remove outer braces
+        input = input.substring(2, input.length() - 2);
+        
+        // Split the string into pairs
+        String[] pairs = input.split("\\},\\{");
+        
+        // Initialize the resulting array
+        int[][] result = new int[pairs.length][2];
+        
+        // Iterate over each pair
+        for (int i = 0; i < pairs.length; i++) {
+            // Split the pair into individual numbers
+            String[] numbers = pairs[i].split(", ");
+            result[i][0] = Integer.parseInt(numbers[0]);
+            result[i][1] = Integer.parseInt(numbers[1]);
         }
-
-        return array;
+        
+        return result;
     }
 
     public static void test(LLK l) {
