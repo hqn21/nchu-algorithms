@@ -81,9 +81,11 @@ public class HW08 {
         LLK build2 = new HW08_4111056036_2();
         LLK build3 = new HW08_4111056036_3();
         LLK build4 = new HW08_4111056036_4();
+        LLK build5 = new HW08_4111056036_5();
         test(build1);
         test(build2);
         test(build3);
         test(build4);
+        test(build5);
     }
 }
