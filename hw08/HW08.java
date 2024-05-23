@@ -23,7 +23,9 @@ public class HW08 {
     public static void main(String[] args) {
         LLK build1 = new HW08_4111056036_1();
         LLK build2 = new HW08_4111056036_2();
+        LLK build3 = new HW08_4111056036_3();
         test(build1);
         test(build2);
+        test(build3);
     }
 }
