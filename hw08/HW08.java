@@ -2,6 +2,14 @@ public class HW08 {
     public static void test(LLK l) {
         int[][] a = {{1, 2}, {1, 3}, {1, 4}};
         int[][] b = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
+        int[][] c = new int[8000][];
+
+        for(int i = 0; i < 8000; ++i) {
+            c[i] = new int[2];
+            c[i][0] = i + 1;
+            c[i][1] = i + 1;
+        }
+
         boolean result;
         double time;
         StopWatch stopWatch;
@@ -16,6 +24,11 @@ public class HW08 {
         result = l.checkLLK(b);
         time = stopWatch.elapsedTime();
         System.out.println("Result: " + result + "\t" + (result == false ? "[CORRECT]" : "[WRONG]"));
+        System.out.println("Time: " + time + "ns");
+        stopWatch = new StopWatch();
+        result = l.checkLLK(c);
+        time = stopWatch.elapsedTime();
+        System.out.println("Result: " + result + "\t" + (result == true ? "[CORRECT]" : "[WRONG]"));
         System.out.println("Time: " + time + "ns");
         System.out.println("====================");
     }
