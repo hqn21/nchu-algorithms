@@ -1,10 +1,12 @@
 public class HW08_4111056036_5 extends LLK {
     public int gcd(int a, int b) {
-        if (b == 0) {
-            return a;
-        } else {
-            return gcd(b, a % b);
+        int temp;
+        while (b != 0) {
+            temp = a;
+            a = b;
+            b = temp % b;
         }
+        return a;
     }
 
     @Override
