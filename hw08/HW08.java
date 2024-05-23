@@ -1,14 +1,51 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class HW08 {
+    public static int[][] readTxtFileTo2DArray(String fileName) {
+        List<int[]> rows = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                content.append(line);
+            }
+
+            // 去除大括號和空格，並根據逗號拆分
+            String[] pairs = content.toString()
+                                    .replace("{", "")
+                                    .replace("}", "")
+                                    .split("\\),\\(");
+
+            for (String pair : pairs) {
+                String[] numbers = pair.split(",");
+                int[] row = new int[numbers.length];
+                for (int i = 0; i < numbers.length; i++) {
+                    row[i] = Integer.parseInt(numbers[i].trim());
+                }
+                rows.add(row);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 將 ArrayList 轉換為二維陣列
+        int[][] array = new int[rows.size()][];
+        for (int i = 0; i < rows.size(); i++) {
+            array[i] = rows.get(i);
+        }
+
+        return array;
+    }
+
     public static void test(LLK l) {
         int[][] a = {{1, 2}, {1, 3}, {1, 4}};
         int[][] b = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
-        int[][] c = new int[8000][];
-
-        for(int i = 0; i < 8000; ++i) {
-            c[i] = new int[2];
-            c[i][0] = i + 1;
-            c[i][1] = i + 1;
-        }
+        int[][] c = readTxtFileTo2DArray("HW8_test_data/hw8_public_data_1.txt");
 
         boolean result;
         double time;
