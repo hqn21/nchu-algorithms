@@ -6,7 +6,7 @@ public class HW08_4111056036_5 extends LLK {
             a = b;
             b = temp % b;
         }
-        return a;
+        return Math.abs(a);
     }
 
     @Override
@@ -31,6 +31,15 @@ public class HW08_4111056036_5 extends LLK {
         for(int i = 2; i < n; ++i) {
             deltaX = array[i][0] - array[i - 1][0];
             deltaY = array[i][1] - array[i - 1][1];
+
+            if(firstDeltaX == 0 && deltaX == 0) {
+                continue;
+            }
+
+            if(firstDeltaY == 0 && deltaY == 0) {
+                continue;
+            }
+
             gcd = gcd(deltaX, deltaY);
             deltaX /= gcd;
             deltaY /= gcd;
