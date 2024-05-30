@@ -8,7 +8,7 @@ public class HW09_4111056036_2 extends BuyPhone {
     }
 
     private int partition(int[][] arr, int[] ids, int low, int high) {
-        int mid = low + (high - low) / 2;
+        int mid = low + (high - low) >> 1;
         int pivotIndex = medianOfThree(arr, ids, low, mid, high);
         int pivotPrimary = arr[ids[pivotIndex]][0];
         int pivotSecondary = arr[ids[pivotIndex]][1];
