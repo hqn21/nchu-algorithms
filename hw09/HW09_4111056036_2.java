@@ -8,70 +8,66 @@ public class HW09_4111056036_2 extends BuyPhone {
     }
 
     private int partition(int[][] arr, int[] ids, int low, int high) {
-        int mid = low + (high - low) >> 1;
-        int pivotIndex = medianOfThree(arr, low, mid, high);
-        int pivot = arr[pivotIndex][0];
-        swap(arr, ids, pivotIndex, high);
+        int mid = low + (high - low) / 2;
+        int pivotIndex = medianOfThree(arr, ids, low, mid, high);
+        int pivotPrimary = arr[ids[pivotIndex]][0];
+        int pivotSecondary = arr[ids[pivotIndex]][1];
+        swap(ids, pivotIndex, high);
         int i = low - 1;
-
+    
         for (int j = low; j < high; j++) {
-            if (arr[j][0] <= pivot) {
+            if (arr[ids[j]][0] < pivotPrimary || (arr[ids[j]][0] == pivotPrimary && arr[ids[j]][1] < pivotSecondary)) {
                 i++;
-                swap(arr, ids, i, j);
+                swap(ids, i, j);
             }
         }
-        swap(arr, ids, i + 1, high);
+        swap(ids, i + 1, high);
         return i + 1;
     }
 
-    private int medianOfThree(int[][] arr, int low, int mid, int high) {
-        if (arr[low][0] > arr[mid][0]) {
-            if (arr[mid][0] > arr[high][0])
+    private int medianOfThree(int[][] arr, int[] ids, int low, int mid, int high) {
+        if (arr[ids[low]][0] > arr[ids[mid]][0]) {
+            if (arr[ids[mid]][0] > arr[ids[high]][0])
                 return mid;
-            else if (arr[low][0] > arr[high][0])
+            else if (arr[ids[low]][0] > arr[ids[high]][0])
                 return high;
             else
                 return low;
         } else {
-            if (arr[low][0] > arr[high][0])
+            if (arr[ids[low]][0] > arr[ids[high]][0])
                 return low;
-            else if (arr[mid][0] > arr[high][0])
+            else if (arr[ids[mid]][0] > arr[ids[high]][0])
                 return high;
             else
                 return mid;
         }
     }
 
-    private void swap(int[][] arr, int[] ids, int i, int j) {
-        int[] temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-        int tp = ids[i];
+    private void swap(int[] ids, int i, int j) {
+        int temp = ids[i];
         ids[i] = ids[j];
-        ids[j] = tp;
+        ids[j] = temp;
     }
 
     @Override
     public int[][] bestPhone(int[][] phones) {
-        int[][] backup = phones.clone();
         int n = phones.length;
         int[] ids = new int[n];
         boolean[] good = new boolean[n];
-        int count = n;
+        int count = 0;
         for (int i = 0; i < n; ++i) {
             ids[i] = i;
         }
 
         quickSort(phones, ids, 0, n - 1);
 
-        for (int i = 0; i < n; ++i) {
-            good[ids[i]] = true;
-            for (int j = n - 1; j > i; --j) {
-                if (phones[i][1] < phones[j][1]) {
-                    good[ids[i]] = false;
-                    --count;
-                    break;
-                }
+        int maxY = Integer.MIN_VALUE;
+
+        for(int i = n - 1; i >= 0; --i) {
+            if(phones[ids[i]][1] >= maxY) {
+                good[ids[i]] = true;
+                ++count;
+                maxY = phones[ids[i]][1];
             }
         }
 
@@ -80,7 +76,7 @@ public class HW09_4111056036_2 extends BuyPhone {
 
         for (int i = 0; i < n; ++i) {
             if (good[i]) {
-                ans[now] = backup[i];
+                ans[now] = phones[i];
                 ++now;
             }
         }
