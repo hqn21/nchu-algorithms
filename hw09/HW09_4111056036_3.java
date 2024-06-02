@@ -78,6 +78,9 @@ public class HW09_4111056036_3 extends BuyPhone {
             if (good[i]) {
                 ans[now] = phones[i];
                 ++now;
+                if(now == count) {
+                    break;
+                }
             }
         }
 
