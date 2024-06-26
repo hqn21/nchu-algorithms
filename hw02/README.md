@@ -26,6 +26,7 @@ Given an integer array with unique integers, calculate the number of combination
 ├─ HW02_4111056036_5.java           # Version 5
 ├─ StopWatch.java                   # Class for Calculate Runtime
 ├─ build.sh                         # Compile Script
+├─ note.pdf                         # Idea Note
 └─ README.md
 ```
 
