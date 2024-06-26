@@ -5,7 +5,7 @@ Ojou-sama wants to buy a new smartphone. She is tired of using her Nokia 3310 fo
 
 ### Examples
 **Example 1:**
-> **Input:** phones =  [[1, 1],[2, 4],[2, 10],[5, 4],[4, 8],[5, 5],[8, 4],[10, 2],[10, 1]]
+> **Input:** phones = [[1, 1],[2, 4],[2, 10],[5, 4],[4, 8],[5, 5],[8, 4],[10, 2],[10, 1]]
 > **Output:** [[2, 10],[4, 8],[5, 5],[8, 4],[10, 2]]
 
 ### File Structure
