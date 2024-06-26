@@ -45,7 +45,7 @@ The teaching assistant changed the question, so there is no score.
 **hw09**
 |  Rank  |      Version      | Status  |   Time   |
 |--------|-------------------|---------|----------|
-| 9/213  | HW09_4111056036_3 | Correct | 0.003272 |
+| 9/106  | HW09_4111056036_3 | Correct | 0.003272 |
 
 ## License
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.

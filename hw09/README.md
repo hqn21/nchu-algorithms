@@ -27,7 +27,7 @@ Ojou-sama wants to buy a new smartphone. She is tired of using her Nokia 3310 fo
 ### Best Version
 |  Rank  |      Version      | Status  |   Time   |
 |--------|-------------------|---------|----------|
-| 9/213  | HW09_4111056036_3 | Correct | 0.003272 |
+| 9/106  | HW09_4111056036_3 | Correct | 0.003272 |
 > Note: The rank is compared to the best submissions from all participants. 
 
 ### All Versions
