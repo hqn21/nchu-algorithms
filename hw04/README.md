@@ -4,11 +4,11 @@
 Calculate the frequency of words appearing AFTER a keyword A[0] in a given article A[1], and return the most commonly occurring word. Note that each word in A[1] is separated by a single space.
 ### Examples
 **Example 1:**
-> **Input:** A = ["臺中市","臺中市 中華民國 直轄市 中臺灣 臺中市 中華民國 臺灣"]
+> **Input:** A = ["臺中市","臺中市 中華民國 直轄市 中臺灣 臺中市 中華民國 臺灣"]    
 > **Output:** 中華民國
 
 **Example 2:**
-> **Input:** A = ["柯文哲","柯文哲 外科 醫師 政治人物 柯文哲 民眾黨 主席 柯文哲 民眾黨"]
+> **Input:** A = ["柯文哲","柯文哲 外科 醫師 政治人物 柯文哲 民眾黨 主席 柯文哲 民眾黨"]    
 > **Output:** 民眾黨
 
 ### File Structure

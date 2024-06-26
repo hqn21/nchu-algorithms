@@ -5,11 +5,11 @@ In this programming assignment, you will explore the efficiency and implementati
 
 ### Examples
 **Example 1:**
-> **Input:** A = [5,1,4,2,3]
+> **Input:** A = [5,1,4,2,3]    
 > **Output:** [1,2,3,4,5]
 
 **Example 2:**
-> **Input:** A = [2,1,1,3,2]
+> **Input:** A = [2,1,1,3,2]    
 > **Output:** [1,1,2,2,3]
 
 ### File Structure

@@ -5,7 +5,7 @@ Given an undirected graph 𝐺 = (𝑉, 𝐸), find 𝒎𝒂𝒙_(𝒖,𝒗) �
 
 ### Examples
 **Example 1:**
-> **Input:** array = [[0, 1], [0, 2], [0, 4], [1, 3], [1, 4], [2, 5], [6, 7]]
+> **Input:** array = [[0, 1], [0, 2], [0, 4], [1, 3], [1, 4], [2, 5], [6, 7]]   
 > **Output:** 4
 
 ### File Structure

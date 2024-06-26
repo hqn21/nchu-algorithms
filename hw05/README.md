@@ -4,7 +4,7 @@
 You are given a sequence of tokens, where each token represents a word. Your task is to find a sequence of tokens with a total depth of 4, starting from a given starting token, such that the product of the probability of each token following the previous one is maximized.
 ### Examples
 **Example 1:**
-> **Input:** A = ["國立","國立 中興 南區 國立 中興 大學 大學 國立 中興 大學 學店"]
+> **Input:** A = ["國立","國立 中興 南區 國立 中興 大學 大學 國立 中興 大學 學店"]  
 > **Output:** 國立 中興 南區 國立
 
 ### File Structure
