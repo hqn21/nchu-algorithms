@@ -39,7 +39,7 @@ Solutions to homework assignments from the Algorithms course at National Chung H
 |---------|-------------------|---------|----------|
 | 2/106   | HW07_4111056036_4 | Correct | 0.007355 |
 
-**hw08**
+**hw08**  
 The teaching assistant changed the question, so there is no score.
 
 **hw09**
