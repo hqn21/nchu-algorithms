@@ -5,7 +5,7 @@ In astronomical observations, astronomers are studying whether the arrangement o
 
 ### Examples
 **Example 1:**
-> **Input:** array = [[1, 2],[1, 3],[1, 4]] 
+> **Input:** array = [[1, 2],[1, 3],[1, 4]]  
 > **Output:** True
 
 **Example 1:**
