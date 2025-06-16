@@ -51,4 +51,4 @@ The teaching assistant changed the question, so there is no score.
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ## Contact
-劉顥權 Haoquan Liu - [contact@haoquan.me](mailto:contact@haoquan.me)
+Hao-Quan Liu - [contact@haoquan.me](mailto:contact@haoquan.me)
